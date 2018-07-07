@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Test</string>
+    <string name="app_name2">Story</string>
+    <string name="button">OK</string>
+    <string name="button3">-></string>
+    <string name="editText">Enter your link:</string>
+</resources>
