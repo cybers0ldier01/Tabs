@@ -6,32 +6,87 @@
     android:layout_height="match_parent"
     tools:context="com.example.misha.modulea.MainActivity">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar2" />
+    <TabHost
+        android:id="@+id/tabHost"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="100dp"
-        android:backgroundTint="@android:color/darker_gray"
-        android:text="OK"
-        android:textSize="34sp" />
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="334dp"
-        android:layout_height="71dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="166dp"
-        android:ems="10"
-        android:hint="Enter your link:"
-        android:inputType="textPersonName"
-        android:textColorHint="@android:color/background_dark"
-        android:textSize="30sp" />
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"></TabWidget>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginBottom="50dp">
+
+                <LinearLayout
+                    android:id="@+id/tab1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <EditText
+                        android:id="@+id/editText"
+                        android:layout_width="334dp"
+                        android:layout_height="71dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="166dp"
+                        android:ems="10"
+                        android:hint="Enter your link:"
+                        android:inputType="textPersonName"
+                        android:textColorHint="@android:color/background_dark"
+                        android:textSize="30sp" />
+
+                    <Button
+                        android:id="@+id/button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="100dp"
+                        android:layout_marginTop="100dp"
+                        android:backgroundTint="@android:color/darker_gray"
+                        android:elevation="0dp"
+                        android:text="OK"
+                        android:textAlignment="center"
+                        android:textSize="34sp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+
+                    <include
+                        android:id="@+id/toolbar"
+                        layout="@layout/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <ListView
+                        android:id="@+id/listview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+
+                </LinearLayout>
+            </FrameLayout>
+        </RelativeLayout>
+    </TabHost>
+
 
 </RelativeLayout>
