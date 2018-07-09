@@ -38,13 +38,8 @@ import java.util.Objects;
 
 
 public class MainActivity extends AppCompatActivity {
-    String[] names = {"Иван", "Марья", "Петр", "Антон", "Даша", "Борис",
-            "Костя", "Игорь", "Анна", "Денис", "Андрей", "Марья", "Петр", "Антон", "Даша", "Борис",
-            "Костя", "Игорь", "Анна", "Денис", "Андрей", "Марья", "Петр", "Антон", "Даша", "Борис",
-            "Костя", "Игорь", "Анна", "Денис", "Андрей"};
     ImageButton button;
     LinkAdapter linkAd;
-
     TabHost tabHost;
     public static final String EXTRA_MESSAGE = "com.example.misha.modulea.MESSAGE";
     Button btn;
@@ -54,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Link> local;
     Map<Link, Integer> status_sort = new HashMap<Link, Integer>();
     Map<Link, String> status_date = new HashMap<Link, String>();
-    //AppDatabase db;
     ListView lv;
 
     @Override
