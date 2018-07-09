@@ -74,9 +74,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.arrow:
-                Intent intent1 = new Intent(context, MainActivity.class);
-                startActivity(intent1);
             case R.id.status:
                 for(MyLink loc : links){ status_sort.put(loc, loc.getStatus());}
                 Map<MyLink, Integer> map = sortByValues((HashMap) status_sort);
@@ -166,8 +163,10 @@ private static HashMap sortByValues(HashMap map) {
 
         btn = (Button) findViewById(R.id.button);
         tv = (TextView) findViewById(R.id.editText);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar_test));
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar_history));
 
 
 
