@@ -164,7 +164,10 @@ private static HashMap sortByValues(HashMap map) {
                 DatabaseInintializer.addLink(AppDatabase.getAppDatabase(context),new com.example.misha.modulea.modul.Link(tv.getText().toString(),1,date_local));
                 int count = DatabaseInintializer.getCount(AppDatabase.getAppDatabase(context));
                 Intent intent = getPackageManager().getLaunchIntentForPackage("com.example.moduleb");
+
                 if(URLUtil.isValidUrl(tv.getText().toString())){
+                    intent.addCategory("com.example.moduleb");
+                    intent.addCategory("com.example.moduleb");
                     Objects.requireNonNull(intent).putExtra("url", tv.getText().toString());
                     startActivity(intent);
                 }else{

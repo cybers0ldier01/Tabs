@@ -61,12 +61,10 @@ public class SecondActivity extends AppCompatActivity {
             }
 
     private boolean checking(Intent intent) {
-
         Set<String> ss = intent.getCategories();
         for (String temp : ss) {
             if (temp.equals(APP_A_URL_TAG)) return true;
         }
         return false;
-
     }
 }
