@@ -1,4 +1,5 @@
 package com.example.misha.modulea;
+
 import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.media.Image;
@@ -18,7 +19,10 @@ import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
-import com.example.misha.modulea.modul.Link;
+import com.example.misha.modulea.Database.LinkRepository;
+import com.example.misha.modulea.Link.MyLink;
+import com.example.misha.modulea.Local.LinkDataSourceClass;
+import com.example.misha.modulea.Local.LinkDatabase;
 
 import java.net.URL;
 import java.text.DateFormat;
@@ -34,7 +38,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Observable;
 
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -45,12 +58,13 @@ public class MainActivity extends AppCompatActivity {
     Button btn;
     TextView tv;
     MainActivity context = this;
-    List<Link> links = new ArrayList<Link>();
-    ArrayList<Link> local;
-    Map<Link, Integer> status_sort = new HashMap<Link, Integer>();
-    Map<Link, String> status_date = new HashMap<Link, String>();
+    List<MyLink> links = new ArrayList<>();
+   // ArrayList<MyLink> local;
+    Map<MyLink, Integer> status_sort = new HashMap<>();
+    Map<MyLink, String> status_date = new HashMap<>();
     ListView lv;
-
+    private CompositeDisposable compositeDisposable;
+    private LinkRepository linkRepository;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -64,19 +78,19 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent1 = new Intent(context, MainActivity.class);
                 startActivity(intent1);
             case R.id.status:
-                for(Link loc : links){ status_sort.put(loc, loc.getStatus());}
-                Map<Link, Integer> map = sortByValues((HashMap) status_sort);
-                local = new ArrayList<>(map.keySet());
-                linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, local );
+                for(MyLink loc : links){ status_sort.put(loc, loc.getStatus());}
+                Map<MyLink, Integer> map = sortByValues((HashMap) status_sort);
+                links = new ArrayList<>(map.keySet());
+                linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links );
                 lv.setAdapter(linkAd);
                 Toast toast4 = Toast.makeText(getApplicationContext(), "Sort by status", Toast.LENGTH_SHORT);
                 toast4.show();
 
             case R.id.date:
-                for(Link loc : links){ status_date.put(loc, loc.getDate());}
-                Map<Link, Integer> map1 = sortByValuesBackward((HashMap) status_date);
-                local = new ArrayList<>(map1.keySet());
-                linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, local );
+                for(MyLink loc : links){ status_date.put(loc, loc.getDate());}
+                Map<MyLink, Integer> map1 = sortByValuesBackward((HashMap) status_date);
+                links = new ArrayList<>(map1.keySet());
+                linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links );
                 lv.setAdapter(linkAd);
                 Toast toast1 = Toast.makeText(getApplicationContext(), "Sort by date", Toast.LENGTH_SHORT);
                 toast1.show();
@@ -123,7 +137,11 @@ private static HashMap sortByValues(HashMap map) {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        links = DatabaseInintializer.getLinks(AppDatabase.getAppDatabase(this));
+        compositeDisposable = new CompositeDisposable();
+        LinkDatabase linkDatabase = LinkDatabase.getInstance(this);
+        linkRepository = LinkRepository.getmInstance(LinkDataSourceClass.getInstance(linkDatabase.linkDAO()));
+        //Load all Data from Database
+        loadData();
 
         TabHost host = (TabHost) findViewById(R.id.tabHost);
         host.setup();
@@ -141,9 +159,9 @@ private static HashMap sortByValues(HashMap map) {
         host.addTab(spec);
 
         lv = (ListView) findViewById(R.id.listview); // находим список
-        local = new ArrayList<>(links);
+       // local = new ArrayList<>(links);
         lv =  findViewById(R.id.listview); // находим список
-        linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, local );
+        linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links );
         lv.setAdapter(linkAd);   // присваиваем адаптер списку
 
         btn = (Button) findViewById(R.id.button);
@@ -157,19 +175,49 @@ private static HashMap sortByValues(HashMap map) {
         View.OnClickListener oclbtn = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(URLUtil.isValidUrl(tv.getText().toString())){
+               /* int isThere = 12;
+                for(int i=0;i<=links.size();i++){
+                    if(links.get(i).getJust_link().equals(tv.getText().toString())){
+                        isThere=54;
+                    } }
+                if(isThere==12){*/
                 DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 Date date = new Date();
-                String date_local = dateFormat.format(date);
-                DatabaseInintializer.populateSync(AppDatabase.getAppDatabase(context));
-                DatabaseInintializer.addLink(AppDatabase.getAppDatabase(context),new com.example.misha.modulea.modul.Link(tv.getText().toString(),1,date_local));
-                int count = DatabaseInintializer.getCount(AppDatabase.getAppDatabase(context));
-                Intent intent = getPackageManager().getLaunchIntentForPackage("com.example.moduleb");
+                final String date_local = dateFormat.format(date);
+                Disposable disposable = io.reactivex.Observable.create(new ObservableOnSubscribe<Object>() {
+                    @Override
+                    public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
 
-                if(URLUtil.isValidUrl(tv.getText().toString())){
+                        MyLink link = new MyLink(tv.getText().toString(),date_local,3);
+                        links.add(link);
+                        linkRepository.insertLink(link);
+                        emitter.onComplete();
+                    }
+                })
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(new Consumer<Object>() {
+                            @Override
+                            public void accept(Object o) throws Exception {
+                                Toast.makeText(MainActivity.this,"Link added!",Toast.LENGTH_SHORT).show();
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                Toast.makeText(MainActivity.this,""+ throwable.getMessage(),Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+
+                Intent intent = getPackageManager().getLaunchIntentForPackage("com.example.moduleb");
                     intent.addCategory("com.example.moduleb");
-                    intent.addCategory("com.example.moduleb");
-                    Objects.requireNonNull(intent).putExtra("url", tv.getText().toString());
+                    intent.putExtra("url", tv.getText().toString());
                     startActivity(intent);
+               /* }else{
+                    Toast.makeText(getApplicationContext(), "This URL already exists in list", Toast.LENGTH_SHORT).show();
+                }*/
+
                 }else{
                     Toast.makeText(getApplicationContext(), "url is not valid", Toast.LENGTH_SHORT).show();
                 }
@@ -178,8 +226,36 @@ private static HashMap sortByValues(HashMap map) {
         };
 
         btn.setOnClickListener(oclbtn);
+        MyLink link = new MyLink("ddgd","535",3);
+
 
         //db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "database-name").build();
+    }
+
+    private void loadData() {
+
+        Disposable disposable = linkRepository.getAllLinks()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Consumer<List<MyLink>>() {
+                    @Override
+                    public void accept(List<MyLink> myLinks) throws Exception {
+                        onGetAllLinkSuccess(myLinks);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Toast.makeText(MainActivity.this,""+throwable.getMessage(),Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+        compositeDisposable.add(disposable);
+    }
+
+    private void onGetAllLinkSuccess(List<MyLink> myLinks) {
+        links.clear();
+        links.addAll(myLinks);
+        linkAd.notifyDataSetChanged();
     }
 
 

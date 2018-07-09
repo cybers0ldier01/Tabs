@@ -16,7 +16,7 @@ import java.util.Set;
 public class SecondActivity extends AppCompatActivity {
 
     private static final String APP_A_URL_TAG = "com.example.moduleb";
-    private static final String LINK_TAG = "link_tag";
+    private static final String LINK_TAG = "url";
 
     /**
      * Attributes for displaying image

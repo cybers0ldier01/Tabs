@@ -36,14 +36,26 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:design:28.0.0-alpha3'
 
-    def room_version = "1.1.1"
+    //room
+    def room_version = "1.1.0"
     implementation "android.arch.persistence.room:runtime:$room_version"
     annotationProcessor "android.arch.persistence.room:compiler:$room_version"
-    // optional - RxJava support for Room
+    androidTestImplementation "android.arch.persistence.room:testing:$room_version"
     implementation "android.arch.persistence.room:rxjava2:$room_version"
-    // optional - Guava support for Room, including Optional and ListenableFuture
-    implementation "android.arch.persistence.room:guava:$room_version"
-    // Test helpers
-    testImplementation "android.arch.persistence.room:testing:$room_version"
+
+
+    // Lifecycle components
+    def lifecycle_version = "1.1.1"
+    implementation "android.arch.lifecycle:extensions:$lifecycle_version"
+    annotationProcessor "android.arch.lifecycle:compiler:$lifecycle_version"
+    annotationProcessor "android.arch.lifecycle:runtime:$lifecycle_version"
+    implementation "android.arch.lifecycle:reactivestreams:$lifecycle_version"
+
+    //architect
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.12'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'com.annimon:stream:1.1.9'
+    annotationProcessor "org.androidannotations:androidannotations:4.4.0"
+    implementation "org.androidannotations:androidannotations-api:4.4.0"
 
 }

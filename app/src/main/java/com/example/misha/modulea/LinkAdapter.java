@@ -8,7 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import com.example.misha.modulea.modul.Link;
+
+import com.example.misha.modulea.Link.MyLink;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,15 +18,15 @@ import java.util.zip.Inflater;
 
 
 //Кастомный адаптер для возможности менять цветик в ячеечках
-public class LinkAdapter extends ArrayAdapter<Link> {
+public class LinkAdapter extends ArrayAdapter<MyLink> {
 
     private Context mContext;
     private int id;
-    private ArrayList<Link> items;
+    private List<MyLink> items;
     Context ctx;
     LayoutInflater lInflater;
 
-    public LinkAdapter(@NonNull Context context, int resource, @NonNull ArrayList<Link> ar) {
+    public LinkAdapter(@NonNull Context context, int resource, @NonNull List<MyLink> ar) {
         super(context, resource, ar);
         mContext = context;
         id = resource;
@@ -42,7 +43,7 @@ public class LinkAdapter extends ArrayAdapter<Link> {
 
     // элемент по позиции
     @Override
-    public com.example.misha.modulea.modul.Link getItem(int position) {
+    public MyLink getItem(int position) {
         return items.get(position);
     }
 
@@ -61,7 +62,7 @@ public class LinkAdapter extends ArrayAdapter<Link> {
             mView = lInflater.inflate(R.layout.item, parent, false);
         }
 
-        com.example.misha.modulea.modul.Link s = getItem(position);
+        MyLink s = getItem(position);
         TextView text = (TextView) mView.findViewById(R.id.tvDescr);
 
         text.setText(s.getJust_link());
