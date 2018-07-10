@@ -1,11 +1,15 @@
 <resources>
-    <string name="app_name">Test</string>
-    <string name="app_name2">Story</string>
+    <string name="app_name">Image Viewer</string>
+    <string name="app_name2">Image viewer</string>
+    <string name="title_test">Test</string>
+    <string name="title_history">Story</string>
     <string name="button">OK</string>
     <string name="button3">-></string>
     <string name="editText">Enter your link:</string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="ok_btn_text">OK</string>
+    <string name="enter_your_link">Enter your link:</string>
 
 </resources>

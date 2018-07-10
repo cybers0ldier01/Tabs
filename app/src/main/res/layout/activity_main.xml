@@ -1,116 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<TabHost android:id="@+id/tabHost"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.misha.modulea.MainActivity">
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TabHost
-        android:id="@+id/tabHost"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="fill_parent"
-                android:layout_height="50dp"
-                android:layout_alignParentBottom="true"></TabWidget>
+            <LinearLayout
+                android:id="@+id/tab1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_marginBottom="50dp">
+                <!--<android.support.design.widget.AppBarLayout-->
+                <!--android:id="@+id/appbar"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:layout_width="match_parent">-->
 
-                <LinearLayout
-                    android:id="@+id/tab1"
+
+                <!--</android.support.design.widget.AppBarLayout>-->
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar_test"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    android:elevation="4dp"
+                    android:theme="@style/AppTheme.AppBarOverlay"
+                    app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-                    <!--<android.support.design.widget.AppBarLayout-->
-                        <!--android:id="@+id/appbar"-->
-                        <!--android:layout_height="50dp"-->
-                        <!--android:layout_width="match_parent">-->
-
-
-                    <!--</android.support.design.widget.AppBarLayout>-->
-
-                    <android.support.v7.widget.Toolbar
-                        android:id="@+id/toolbar_test"
-                        android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize"
-                        android:background="?attr/colorPrimary"
-                        android:elevation="4dp"
-                        android:theme="@style/AppTheme.AppBarOverlay"
-                        app:popupTheme="@style/AppTheme.PopupOverlay"/>
-
-                    <EditText
-                        android:id="@+id/editText"
-                        android:layout_width="334dp"
-                        android:layout_height="71dp"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="166dp"
-                        android:ems="10"
-                        android:hint="Enter your link:"
-                        android:inputType="textPersonName"
-                        android:textColorHint="@android:color/background_dark"
-                        android:textSize="30sp" />
-
-                    <Button
-                        android:id="@+id/button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="100dp"
-                        android:layout_marginTop="100dp"
-                        android:backgroundTint="@android:color/darker_gray"
-                        android:onClick="downloadImageFromUrl"
-                        android:elevation="0dp"
-                        android:text="OK"
-                        android:textAlignment="center"
-                        android:textSize="34sp" />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/tab2"
+                <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
 
-
-                    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/toolbar_history"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/colorPrimary"
-                        android:elevation="4dp"
-                        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+                        android:orientation="vertical">
 
-                    </android.support.v7.widget.Toolbar>
+                        <EditText
+                            android:id="@+id/editText"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="8dp"
+                            android:hint="@string/enter_your_link"
+                            android:textSize="30sp"
+                            android:inputType="" />
+                    </LinearLayout>
+                </ScrollView>
 
-                    <ListView
-                        android:id="@+id/listview"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                <Button
+                    android:id="@+id/button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/ok_btn_text"
+                    android:textAlignment="center"
+                    android:textSize="34sp"
+                    android:onClick="downloadImageFromUrl"
+                    />
 
 
-                </LinearLayout>
-            </FrameLayout>
-        </RelativeLayout>
-    </TabHost>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tab2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
 
-</RelativeLayout>
+                <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/toolbar_history"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"
+                    android:elevation="4dp"
+                    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                </android.support.v7.widget.Toolbar>
+
+                <ListView
+                    android:id="@+id/listview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            ></TabWidget>
+
+    </LinearLayout>
+</TabHost>

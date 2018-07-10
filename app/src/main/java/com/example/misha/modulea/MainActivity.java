@@ -133,10 +133,8 @@ private static HashMap sortByValues(HashMap map) {
         return sortedHashMap;
     }
 
-
     private static final int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 100;
     ProgressDialog mProgressDialog;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,8 +168,6 @@ private static HashMap sortByValues(HashMap map) {
         host.addTab(spec);
 
         lv = (ListView) findViewById(R.id.listview); // находим список
-       // local = new ArrayList<>(links);
-        lv =  findViewById(R.id.listview); // находим список
         linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links );
         lv.setAdapter(linkAd);   // присваиваем адаптер списку
 
