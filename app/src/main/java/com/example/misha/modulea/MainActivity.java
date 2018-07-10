@@ -130,6 +130,7 @@ private static HashMap sortByValues(HashMap map) {
         }
         return sortedHashMap;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,8 +157,6 @@ private static HashMap sortByValues(HashMap map) {
         host.addTab(spec);
 
         lv = (ListView) findViewById(R.id.listview); // находим список
-       // local = new ArrayList<>(links);
-        lv =  findViewById(R.id.listview); // находим список
         linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links );
         lv.setAdapter(linkAd);   // присваиваем адаптер списку
 
@@ -175,12 +174,8 @@ private static HashMap sortByValues(HashMap map) {
             @Override
             public void onClick(View view) {
                 if(URLUtil.isValidUrl(tv.getText().toString())){
-               /* int isThere = 12;
-                for(int i=0;i<=links.size();i++){
-                    if(links.get(i).getJust_link().equals(tv.getText().toString())){
-                        isThere=54;
-                    } }
-                if(isThere==12){*/
+
+
                 DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 Date date = new Date();
                 final String date_local = dateFormat.format(date);
@@ -213,9 +208,6 @@ private static HashMap sortByValues(HashMap map) {
                     intent.addCategory("com.example.moduleb");
                     intent.putExtra("url", tv.getText().toString());
                     startActivity(intent);
-               /* }else{
-                    Toast.makeText(getApplicationContext(), "This URL already exists in list", Toast.LENGTH_SHORT).show();
-                }*/
 
                 }else{
                     Toast.makeText(getApplicationContext(), "url is not valid", Toast.LENGTH_SHORT).show();
