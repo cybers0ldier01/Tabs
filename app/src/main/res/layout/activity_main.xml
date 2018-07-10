@@ -69,7 +69,10 @@
                     android:layout_gravity="center"
                     android:text="@string/ok_btn_text"
                     android:textAlignment="center"
-                    android:textSize="34sp" />
+                    android:textSize="34sp"
+                    android:onClick="downloadImageFromUrl"
+                    />
+
 
 
             </LinearLayout>
