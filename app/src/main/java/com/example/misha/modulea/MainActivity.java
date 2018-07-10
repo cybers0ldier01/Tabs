@@ -76,9 +76,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.arrow:
-                Intent intent1 = new Intent(context, MainActivity.class);
-                startActivity(intent1);
             case R.id.status:
                 for(MyLink loc : links){ status_sort.put(loc, loc.getStatus());}
                 Map<MyLink, Integer> map = sortByValues((HashMap) status_sort);
@@ -178,10 +175,13 @@ private static HashMap sortByValues(HashMap map) {
         linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links );
         lv.setAdapter(linkAd);   // присваиваем адаптер списку
 
-        btn = (Button) findViewById(R.id.button);
-        tv = (EditText) findViewById(R.id.editText);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        btn = (Button) findViewById(R.id.button);ґ
+        
+        tv = (TextView) findViewById(R.id.editText);
+
+
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar_test));
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar_history));
 
         MyLink link = new MyLink("ddgd","535",3);
 
