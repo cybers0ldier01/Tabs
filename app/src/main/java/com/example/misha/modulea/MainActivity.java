@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     TabHost tabHost;
     public static final String EXTRA_MESSAGE = "com.example.misha.modulea.MESSAGE";
     Button btn;
-    EditText tv;
+    TextView tv;
     MainActivity context = this;
     List<MyLink> links = new ArrayList<>();
    // ArrayList<MyLink> local;
@@ -170,7 +170,7 @@ private static HashMap sortByValues(HashMap map) {
         linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links );
         lv.setAdapter(linkAd);   // присваиваем адаптер списку
 
-        btn = (Button) findViewById(R.id.button);ґ
+        btn = (Button) findViewById(R.id.button);
         
         tv = (TextView) findViewById(R.id.editText);
 
