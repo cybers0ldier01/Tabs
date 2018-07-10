@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.misha.modulea.Link.MyLink;
@@ -67,12 +68,14 @@ public class LinkAdapter extends ArrayAdapter<MyLink> {
         }
 
         MyLink s = getItem(position);
+
+
+
         TextView text = (TextView) mView.findViewById(R.id.tvDescr);
 
         text.setText(s.getJust_link());
         text.setTextColor(Color.BLACK);
-        //text.setLayoutParams(mView.getLayoutParams());
-        //Log.e("myLog", "getView");
+
 
         //а вот тут собсн и происходит установка цвета бэкграунда по статусу ссылки (пока что стрингов)
         if(s.getStatus()==1){
