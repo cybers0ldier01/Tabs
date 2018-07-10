@@ -135,6 +135,7 @@ private static HashMap sortByValues(HashMap map) {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         compositeDisposable = new CompositeDisposable();
         LinkDatabase linkDatabase = LinkDatabase.getInstance(this);
         linkRepository = LinkRepository.getmInstance(LinkDataSourceClass.getInstance(linkDatabase.linkDAO()));
@@ -170,41 +171,40 @@ private static HashMap sortByValues(HashMap map) {
 
 
 
-        View.OnClickListener oclbtn = new View.OnClickListener() {
+        //View.OnClickListener oclbtn =
+        btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(URLUtil.isValidUrl(tv.getText().toString())){
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                    Date date = new Date();
+                    final String date_local = dateFormat.format(date);
+                    Disposable disposable = io.reactivex.Observable.create(new ObservableOnSubscribe<Object>() {
+                        @Override
+                        public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
+
+                            MyLink link = new MyLink(tv.getText().toString(),date_local,3);
+                            links.add(link);
+                            linkRepository.insertLink(link);
+                            emitter.onComplete();
+                        }
+                    })
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(new Consumer<Object>() {
+                                @Override
+                                public void accept(Object o) throws Exception {
+                                    Toast.makeText(MainActivity.this,"Link added!",Toast.LENGTH_SHORT).show();
+                                }
+                            }, new Consumer<Throwable>() {
+                                @Override
+                                public void accept(Throwable throwable) throws Exception {
+                                    Toast.makeText(MainActivity.this,""+ throwable.getMessage(),Toast.LENGTH_SHORT).show();
+                                }
+                            });
 
 
-                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                Date date = new Date();
-                final String date_local = dateFormat.format(date);
-                Disposable disposable = io.reactivex.Observable.create(new ObservableOnSubscribe<Object>() {
-                    @Override
-                    public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
-
-                        MyLink link = new MyLink(tv.getText().toString(),date_local,3);
-                        links.add(link);
-                        linkRepository.insertLink(link);
-                        emitter.onComplete();
-                    }
-                })
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(new Consumer<Object>() {
-                            @Override
-                            public void accept(Object o) throws Exception {
-                                Toast.makeText(MainActivity.this,"Link added!",Toast.LENGTH_SHORT).show();
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                Toast.makeText(MainActivity.this,""+ throwable.getMessage(),Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-
-                Intent intent = getPackageManager().getLaunchIntentForPackage("com.example.moduleb");
+                    Intent intent = getPackageManager().getLaunchIntentForPackage("com.example.moduleb");
                     intent.addCategory("com.example.moduleb");
                     intent.putExtra("url", tv.getText().toString());
                     startActivity(intent);
@@ -214,9 +214,7 @@ private static HashMap sortByValues(HashMap map) {
                 }
 
             }
-        };
-
-        btn.setOnClickListener(oclbtn);
+        });
         MyLink link = new MyLink("ddgd","535",3);
 
 

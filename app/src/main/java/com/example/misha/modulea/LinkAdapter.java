@@ -1,8 +1,11 @@
 package com.example.misha.modulea;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +56,7 @@ public class LinkAdapter extends ArrayAdapter<MyLink> {
         return position;
     }
 
+
     @NonNull
     @Override
     public View getView(int position, View v, @NonNull ViewGroup parent) // методик, который меняет вид нашей вьюшечки
@@ -67,16 +71,19 @@ public class LinkAdapter extends ArrayAdapter<MyLink> {
 
         text.setText(s.getJust_link());
         text.setTextColor(Color.BLACK);
+        //text.setLayoutParams(mView.getLayoutParams());
+        //Log.e("myLog", "getView");
 
         //а вот тут собсн и происходит установка цвета бэкграунда по статусу ссылки (пока что стрингов)
         if(s.getStatus()==1){
-            mView.setBackgroundColor(Color.GREEN);
+            mView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorGreenBackground));
         }
         else if(s.getStatus()==2){
-            mView.setBackgroundColor(Color.RED);
+            mView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorRedBackground));
         }
         else{
-            mView.setBackgroundColor(Color.GRAY);
+            //                               convert R.color to Color
+            mView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorGreyBackground));
         }
 
         return mView;
