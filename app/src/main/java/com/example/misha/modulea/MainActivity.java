@@ -141,7 +141,6 @@ private static HashMap sortByValues(HashMap map) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CONSTANT);
         }

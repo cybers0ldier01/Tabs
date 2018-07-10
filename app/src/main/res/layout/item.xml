@@ -7,6 +7,7 @@
     android:layout_height="wrap_content"
     android:ellipsize="end"
     android:maxLines="3"
+    android:padding="10dp"
     android:text=""
     android:textSize="20sp"
     tools:text="http://www.mytinyphone.com/uploads/users/nekopikachu/uploads/users/nekopikachu/uploads/users/nekopikachu/uploads/users/nekopikachu/uploads/users/nekopikachu/uploads/users/nekopikachu/uploads/users/nekopikachu/uploads/users/nekopikachu/uploads/users/nekopikachu/uploads/users/nekopikachu/uploads/users/nekopikachu/uploads/users/nekopikachu/uploads/users/nekopikachu/uploads/users/nekopikachu/uploads/users/nekopikachu/uploads/users/nekopikachu/uploads/users/nekopikachu/uploads/users/nekopikachu/uploads/users/nekopikachu/uploads/users/nekopikachu/uploads/users/nekopikachu/539785.jpg"></TextView>
