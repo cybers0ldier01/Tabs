@@ -7,10 +7,13 @@
     android:background="@color/colorAppBackground"
     tools:context=".SecondActivity">
 
-    <TextView
-        android:id="@+id/textView"
+
+    <ImageView
+        android:id="@+id/image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="TextView" />
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" >
+    </ImageView>
+
 </RelativeLayout>
