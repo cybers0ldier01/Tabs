@@ -49,5 +49,6 @@ After you will see message "Downloaded", a picture will already be downloaded to
 * *Andrii Fedorko* - andriy.fedorko01@gmail.com
 * *Volodymyr Panasenko* - panvovandrik@gmail.com
 * *Andriy Serbenyuk* - andriy.serb1@gmail.com
+* *Daniel Minyaylo* - daniel_changer@yahoo.com
 
 *this page not done...yet*
