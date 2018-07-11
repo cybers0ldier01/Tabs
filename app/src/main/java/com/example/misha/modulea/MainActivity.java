@@ -13,11 +13,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.misha.modulea.Database.LinkRepository;
@@ -27,6 +29,7 @@ import com.example.misha.modulea.Local.LinkDatabase;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -136,6 +139,67 @@ private static HashMap sortByValues(HashMap map) {
     private static final int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 100;
     ProgressDialog mProgressDialog;
 
+
+    //========================URL_CHECK_METHODS============================
+    //Returns true if url is valid
+    public static boolean isValid(String url) {
+        // Try creating a valid URL
+        try {
+            new URL(url).toURI();
+            return true;
+        }
+        // If there was an Exception while creating URL object
+        catch (Exception e) {return false;}
+    }
+
+    //if url is image, return stat 1, else if url web-site or video return 2
+    public static int checkURL(String u) throws IOException {
+        int status = 0;
+        String format = "";
+        String extension = "";
+        int i = u.lastIndexOf('.');
+        if (i > 0) {
+            extension = u.substring(i + 1);
+        }
+        //set format to FileName  --> name with correct format
+        switch (extension) {
+            case "gif":
+                format += "gif";
+                break;
+            case "png":
+                format += "png";
+                break;
+            case "jpg":
+                format += "jpg";
+                break;
+            case "jpeg":
+                format += "jpeg";
+                break;
+            case "bmp":
+                format += "bmp";
+                break;
+            case "apng":
+                format += "apng";
+                break;
+            case "ico":
+                format += "ico";
+                break;
+            case "wmp":
+                format += "wmp";
+                break;
+        }
+        if(format.equals(extension)){
+            status = 1;
+        }else{
+            status = 2;
+        }
+        return status;
+    }
+//==============================================================================
+
+
+
+    int statAfter = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -166,19 +230,35 @@ private static HashMap sortByValues(HashMap map) {
         spec.setIndicator("History");
         host.addTab(spec);
 
+
         lv = (ListView) findViewById(R.id.listview); // находим список
         linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links );
         lv.setAdapter(linkAd);   // присваиваем адаптер списку
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+                String url = links.get(i).getJust_link();
+                try {
+                    statAfter = checkURL(url);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Intent intent = getPackageManager().getLaunchIntentForPackage("com.example.moduleb");
+                intent.addCategory("com.example.moduleb");
+                intent.putExtra("url", tv.getText().toString());
+                startActivity(intent);
+            }
+        });
+
 
         btn = (Button) findViewById(R.id.button);
-        
         tv = (TextView) findViewById(R.id.editText);
 
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar_test));
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar_history));
 
-        MyLink link = new MyLink("ddgd","535",3);
+        MyLink link = new MyLink("ddgd","535",statAfter);
 
 
         //db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "database-name").build();
@@ -209,12 +289,14 @@ private static HashMap sortByValues(HashMap map) {
         links.addAll(myLinks);
         linkAd.notifyDataSetChanged();
     }
-
-
-
-
     //=================================DOWNLOAD=========================================
-    public void downloadImageFromUrl(View view) {
+
+
+    int statBefore;
+    public void downloadImageFromUrl(View view) throws IOException {
+        String field = tv.getText().toString();
+        statBefore = checkURL(field);
+
         if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "No Permission", Toast.LENGTH_SHORT).show();
         } else {
@@ -226,7 +308,7 @@ private static HashMap sortByValues(HashMap map) {
                 @Override
                 public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
 
-                    MyLink link = new MyLink(tv.getText().toString(), date_local, 3);
+                    MyLink link = new MyLink(tv.getText().toString(), date_local, statBefore);
                     links.add(link);
                     linkRepository.insertLink(link);
                     emitter.onComplete();
@@ -245,105 +327,16 @@ private static HashMap sortByValues(HashMap map) {
                             Toast.makeText(MainActivity.this, "" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
-            MyAsyncTask asyncTask = new MyAsyncTask();
-            asyncTask.execute();
 
-            Intent intent = getPackageManager().getLaunchIntentForPackage("com.example.moduleb");
-            intent.addCategory("com.example.moduleb");
-            intent.putExtra("url", tv.getText().toString());
-            startActivity(intent);
+            if (isValid(field)) {
+                    Intent intent = getPackageManager().getLaunchIntentForPackage("com.example.moduleb");
+                    intent.addCategory("com.example.moduleb");
+                    intent.putExtra("url", tv.getText().toString());
+                    startActivity(intent);
+
+            }else{
+                Toast.makeText(MainActivity.this, "" + "Fields must be filled", Toast.LENGTH_SHORT).show();
             }
-        }
-
-        //DOWNLOAD CLASS
-        class MyAsyncTask extends AsyncTask<Void, Void, Void> {
-            //FEATURE
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-            }
-
-            //======================DOWNLOAD_IMAGE========================================
-            //==============TO_/storage/emulated/0/BIGDIG/B===============================
-            @Override
-            protected Void doInBackground(Void... voids) {
-                tv = findViewById(R.id.editText);
-                String imageURL = tv.getText().toString();
-                //set random name
-                int r = (int) (Math.random() * 2147483647);
-                String fileName = "image" + String.valueOf(r);
-
-                try {
-                    URL url = new URL(imageURL);
-                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                    urlConnection.setRequestMethod("GET");
-                    urlConnection.connect();
-                    //path ot directory
-                    File SDCardRoot = new File(Environment.getExternalStorageDirectory() + "/BIGDIG/test/B");
-                    //exist check --> if dir not exist, it will create
-                    if (!SDCardRoot.exists()) {
-                        SDCardRoot.mkdirs();
-                    }
-                    //create image file
-                    File file = new File(SDCardRoot, fileName);
-                    //read format from url after '.'
-                    String extension = "";
-                    int i = imageURL.lastIndexOf('.');
-                    if (i > 0) {
-                        extension = imageURL.substring(i + 1);
-                    }
-                    //set format to FileName  --> name with correct format
-                    switch (extension) {
-                        case "gif":
-                            fileName += ".gif";
-                            break;
-                        case "png":
-                            fileName += ".png";
-                            break;
-                        case "jpg":
-                            fileName += ".jpg";
-                            break;
-                        case "jpeg":
-                            fileName += ".jpeg";
-                            break;
-                        case "bmp":
-                            fileName += ".bmp";
-                            break;
-                        case "apng":
-                            fileName += ".apng";
-                            break;
-                        case "ico":
-                            fileName += ".ico";
-                            break;
-                        case "wmp":
-                            fileName += ".wmp";
-                            break;
-                        default:
-                            fileName = null;
-                    }
-                    file = new File(SDCardRoot, fileName);
-                    //start downloading image
-                    FileOutputStream fileOutput = new FileOutputStream(file);
-                    InputStream inputStream = urlConnection.getInputStream();
-                    byte[] buffer = new byte[1];
-                    int bufferLength = inputStream.read(buffer);
-                    while (bufferLength > 0) {
-                        fileOutput.write(buffer, 0, bufferLength);
-                        bufferLength = inputStream.read(buffer);
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            //FEATURES
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                Toast.makeText(getApplicationContext(), "Downloaded", Toast.LENGTH_LONG).show();
-            }
-            //================================FILE_WAS_DOWNLOADED===========================
         }
     }
+}
