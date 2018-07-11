@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     TabHost tabHost;
     public static final String EXTRA_MESSAGE = "com.example.misha.modulea.MESSAGE";
     Button btn;
-    TextView tv;
+    EditText tv;
     MainActivity context = this;
     List<MyLink> links = new ArrayList<>();
    // ArrayList<MyLink> local;
@@ -80,19 +80,38 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.status:
-                for(MyLink loc : links){ status_sort.put(loc, loc.getStatus());}
-                Map<MyLink, Integer> map = sortByValues((HashMap) status_sort);
-                links = new ArrayList<>(map.keySet());
-                linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links );
+
+                LinkDatabase linkDatabase = LinkDatabase.getInstance(this);
+                linkRepository = LinkRepository.getmInstance(LinkDataSourceClass.getInstance(linkDatabase.linkDAO()));
+                Disposable disposable = linkRepository.getAllLinksOrderByStatus()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(new Consumer<List<MyLink>>() {
+                            @Override
+                            public void accept(List<MyLink> myLinks) throws Exception {
+                                onGetAllLinkSuccess(myLinks);
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                Toast.makeText(MainActivity.this, "" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+                compositeDisposable.add(disposable);
+
+                linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links);
                 lv.setAdapter(linkAd);
                 Toast toast4 = Toast.makeText(getApplicationContext(), "Sort by status", Toast.LENGTH_SHORT);
                 toast4.show();
+                break;
 
             case R.id.date:
-                for(MyLink loc : links){ status_date.put(loc, loc.getDate());}
-                Map<MyLink, Integer> map1 = sortByValuesBackward((HashMap) status_date);
-                links = new ArrayList<>(map1.keySet());
-                linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links );
+                for (MyLink loc : links) {
+                    status_date.put(loc, loc.getDate());
+                }
+                loadData();
+                linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links);
                 lv.setAdapter(linkAd);
                 Toast toast1 = Toast.makeText(getApplicationContext(), "Sort by date", Toast.LENGTH_SHORT);
                 toast1.show();
@@ -252,8 +271,7 @@ private static HashMap sortByValues(HashMap map) {
 
 
         btn = (Button) findViewById(R.id.button);
-        tv = (TextView) findViewById(R.id.editText);
-
+        tv = (EditText) findViewById(R.id.editText);
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar_test));
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar_history));
