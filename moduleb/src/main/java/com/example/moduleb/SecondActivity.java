@@ -1,13 +1,16 @@
 package com.example.moduleb;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,15 +23,13 @@ import java.io.InputStream;
 import java.util.Set;
 
 
-
 public class SecondActivity extends Activity {
     private static final String APP_A_URL_TAG = "com.example.moduleb";
     private static final String LINK_TAG = "url";
     String url;
-    // Set your Image URL into a string
-    String URLI = "http://paperlief.com/images/highway-sign-png-wallpaper-1.jpg";
     ImageView image;
     ProgressDialog mProgressDialog;
+    private static final int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 100;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,20 +37,28 @@ public class SecondActivity extends Activity {
         // Get the layout from image.xml
         setContentView(R.layout.activity_second);
 
+        if (ActivityCompat.checkSelfPermission(SecondActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(SecondActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CONSTANT);
+        }
 
 
         Intent intentFromAppA = getIntent();
-
-
         if (!checking(intentFromAppA)) {
             DialogWindow();
         } else {
             url = intentFromAppA.getStringExtra(LINK_TAG);
         }
 
+
+        DownloadImage asyncTask = new DownloadImage();
+        //set url
+        asyncTask.setURL(url);
+        //start
+        asyncTask.execute();
+
         // Locate the ImageView in activity_main.xml
         image = (ImageView) findViewById(R.id.image);
-                new DownloadImage().execute(url);
+                new UploadImage().execute(url);
 
 
     }
@@ -90,7 +99,7 @@ public class SecondActivity extends Activity {
     //=================================
 
     // DownloadImage AsyncTask
-    private class DownloadImage extends AsyncTask<String, Void, Bitmap> {
+    private class UploadImage extends AsyncTask<String, Void, Bitmap> {
 
         @Override
         protected void onPreExecute() {
@@ -98,7 +107,7 @@ public class SecondActivity extends Activity {
             // Create a progressdialog
             mProgressDialog = new ProgressDialog(SecondActivity.this);
             // Set progressdialog title
-            mProgressDialog.setTitle("Download Image Tutorial");
+            mProgressDialog.setTitle("Upload Image");
             // Set progressdialog message
             mProgressDialog.setMessage("Loading...");
             mProgressDialog.setIndeterminate(false);
@@ -135,6 +144,6 @@ public class SecondActivity extends Activity {
 
 }
 
-
+//git
 
 
