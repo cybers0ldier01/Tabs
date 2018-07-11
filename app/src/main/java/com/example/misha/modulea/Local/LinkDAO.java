@@ -21,6 +21,10 @@ public interface LinkDAO {
     @Query("SELECT * FROM links")
     Flowable<List<MyLink>> getAllLinks();
 
+
+    @Query("SELECT * FROM links ORDER BY status")
+    Flowable<List<MyLink>> getAllLinksOrderByStatus();
+
     @Insert
     void insertLink(MyLink... links);
 

@@ -33,6 +33,9 @@ public class LinkRepository implements LinkDataSource{
     }
 
     @Override
+    public Flowable<List<MyLink>> getAllLinksOrderByStatus() { return mLocalDataSource.getAllLinksOrderByStatus(); }
+
+    @Override
     public void insertLink(MyLink... links) {
         mLocalDataSource.insertLink(links);
     }

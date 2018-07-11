@@ -31,7 +31,9 @@ public class LinkDataSourceClass implements LinkDataSource {
     public Flowable<List<MyLink>> getAllLinks() {
         return linkDAO.getAllLinks();
     }
-
+    @Override
+    public Flowable<List<MyLink>> getAllLinksOrderByStatus() { return linkDAO.getAllLinksOrderByStatus();
+    }
     @Override
     public void insertLink(MyLink... links) {
         linkDAO.insertLink(links);
