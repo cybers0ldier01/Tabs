@@ -11,6 +11,7 @@ public interface LinkDataSource {
 
     Flowable<MyLink> getOneLink(String link);
     Flowable<List<MyLink>> getAllLinks();
+    Flowable<List<MyLink>> getAllLinksOrderByStatus();
     void insertLink(MyLink... links);
     void updateLink(MyLink... links);
     void deleteLink(MyLink link);
