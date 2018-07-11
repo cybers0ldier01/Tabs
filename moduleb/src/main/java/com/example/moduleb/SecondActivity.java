@@ -2,6 +2,8 @@ package com.example.moduleb;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,8 +20,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.Set;
 
 
@@ -28,6 +32,7 @@ public class SecondActivity extends Activity {
     private static final String LINK_TAG = "url";
     String url;
     ImageView image;
+    Bundle extras;
     ProgressDialog mProgressDialog;
     private static final int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 100;
 
@@ -46,21 +51,24 @@ public class SecondActivity extends Activity {
         if (!checking(intentFromAppA)) {
             DialogWindow();
         } else {
-            url = intentFromAppA.getStringExtra(LINK_TAG);
-        }
-
-
-        DownloadImage asyncTask = new DownloadImage();
-        //set url
-        asyncTask.setURL(url);
-        //start
-        asyncTask.execute();
-
-        // Locate the ImageView in activity_main.xml
-        image = (ImageView) findViewById(R.id.image);
+            extras = intentFromAppA.getExtras();
+            if(extras.getInt("stat")==2) {
+                url =null;
+                Toast.makeText(this,"URL is not an image",Toast.LENGTH_LONG).show();
+            } else{
+              url = intentFromAppA.getStringExtra(LINK_TAG);
+                // Locate the ImageView in activity_main.xml
+                image = (ImageView) findViewById(R.id.image);
                 new UploadImage().execute(url);
-
-
+                if(extras.getString("from").equals("history")){
+                    Toast.makeText(this,"URL will be deleted from DB in 15 seconds",Toast.LENGTH_LONG).show();
+                    start_alarm();
+                    DownloadImage asyncTask = new DownloadImage();
+                    asyncTask.setURL(url);
+                    asyncTask.execute();
+                }
+            }
+        }
     }
 
     //=============================
@@ -139,6 +147,14 @@ public class SecondActivity extends Activity {
             // Close progressdialog
             mProgressDialog.dismiss();
         }
+    }
+    public void start_alarm() {
+        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        Intent myIntent = new Intent(this, Alarm.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, myIntent, 0);
+
+        manager.set(AlarmManager.RTC_WAKEUP,new Date().getTime()+15000, pendingIntent);
     }
 
 

@@ -27,7 +27,6 @@ public class LinkAdapter extends ArrayAdapter<MyLink> {
     private Context mContext;
     private int id;
     private List<MyLink> items;
-    Context ctx;
     LayoutInflater lInflater;
 
     public LinkAdapter(@NonNull Context context, int resource, @NonNull List<MyLink> ar) {
@@ -53,10 +52,11 @@ public class LinkAdapter extends ArrayAdapter<MyLink> {
 
     // id по позиции
     @Override
-    public long getItemId(int position) {
-        return position;
-    }
+    public long getItemId(int position) { return position; }
 
+    public int customGetItemId(int position) {
+        return items.get(position).getId();
+    }
 
     @NonNull
     @Override

@@ -2,6 +2,7 @@ package com.example.misha.modulea;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.example.misha.modulea.MESSAGE";
     Button btn;
     TextView tv;
-    MainActivity context = this;
+    static Context context;
     List<MyLink> links = new ArrayList<>();
    // ArrayList<MyLink> local;
     Map<MyLink, Integer> status_sort = new HashMap<>();
@@ -154,7 +155,7 @@ private static HashMap sortByValues(HashMap map) {
 
     //if url is image, return stat 1, else if url web-site or video return 2
     public static int checkURL(String u) throws IOException {
-        int status = 0;
+        int status;
         String format = "";
         String extension = "";
         int i = u.lastIndexOf('.');
@@ -189,7 +190,10 @@ private static HashMap sortByValues(HashMap map) {
                 break;
         }
         if(format.equals(extension)){
-            status = 1;
+
+                status = 1;
+
+
         }else{
             status = 2;
         }
@@ -199,16 +203,15 @@ private static HashMap sortByValues(HashMap map) {
 
 
 
-    int statAfter = 0;
+    int statAfter = 3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CONSTANT);
         }
-
+        MainActivity.context = getApplicationContext();
         compositeDisposable = new CompositeDisposable();
         LinkDatabase linkDatabase = LinkDatabase.getInstance(this);
         linkRepository = LinkRepository.getmInstance(LinkDataSourceClass.getInstance(linkDatabase.linkDAO()));
@@ -237,15 +240,73 @@ private static HashMap sortByValues(HashMap map) {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
-                String url = links.get(i).getJust_link();
+
+                final int id = i;
+
+                String url = links.get(id).getJust_link();
+
                 try {
                     statAfter = checkURL(url);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                Disposable disposablen = io.reactivex.Observable.create(new ObservableOnSubscribe<Object>() {
+                    @Override
+                    public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
+
+                        links.get(id).setStatus(statAfter);
+                        linkRepository.updateLink(links.get(id));
+                        linkAd.notifyDataSetChanged();
+                        emitter.onComplete();
+                    }
+                })
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(new Consumer<Object>() {
+                            @Override
+                            public void accept(Object o) throws Exception {
+
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+
+                            }
+                        });
+                if(links.get(id).getStatus()==1){
+                    statAfter =1;
+                    Disposable disposable = io.reactivex.Observable.create(new ObservableOnSubscribe<Object>() {
+                        @Override
+                        public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
+
+
+                            linkRepository.deleteLink(links.get(id));
+                            links.remove(id);
+                            linkAd.notifyDataSetChanged();
+                            emitter.onComplete();
+                        }
+                    })
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(new Consumer<Object>() {
+                                @Override
+                                public void accept(Object o) throws Exception {
+
+                                }
+                            }, new Consumer<Throwable>() {
+                                @Override
+                                public void accept(Throwable throwable) throws Exception {
+
+                                }
+                            });
+
+                }
+
                 Intent intent = getPackageManager().getLaunchIntentForPackage("com.example.moduleb");
                 intent.addCategory("com.example.moduleb");
-                intent.putExtra("url", tv.getText().toString());
+                intent.putExtra("url", url);
+                intent.putExtra("stat", statAfter);
+                intent.putExtra("from", "history");
                 startActivity(intent);
             }
         });
@@ -258,11 +319,9 @@ private static HashMap sortByValues(HashMap map) {
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar_test));
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar_history));
 
-        MyLink link = new MyLink("ddgd","535",statAfter);
 
 
-        //db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "database-name").build();
-    }
+        }
 
     private void loadData() {
 
@@ -311,6 +370,7 @@ private static HashMap sortByValues(HashMap map) {
                     MyLink link = new MyLink(tv.getText().toString(), date_local, statBefore);
                     links.add(link);
                     linkRepository.insertLink(link);
+                    linkAd.notifyDataSetChanged();
                     emitter.onComplete();
                 }
             })
@@ -332,6 +392,8 @@ private static HashMap sortByValues(HashMap map) {
                     Intent intent = getPackageManager().getLaunchIntentForPackage("com.example.moduleb");
                     intent.addCategory("com.example.moduleb");
                     intent.putExtra("url", tv.getText().toString());
+                    intent.putExtra("stat", statBefore);
+                    intent.putExtra("from", "test");
                     startActivity(intent);
 
             }else{
@@ -339,5 +401,29 @@ private static HashMap sortByValues(HashMap map) {
             }
         }
     }
+
+    public static boolean checkIfURLExists(String targetUrl) {
+        HttpURLConnection httpUrlConn;
+        try {
+            httpUrlConn = (HttpURLConnection) new URL(targetUrl)
+                    .openConnection();
+
+            httpUrlConn.setRequestMethod("HEAD");
+
+            httpUrlConn.setConnectTimeout(1000);
+            httpUrlConn.setReadTimeout(1000);
+
+            /*System.out.println("Response Code: "
+                    + httpUrlConn.getResponseCode());
+            System.out.println("Response Message: "
+                    + httpUrlConn.getResponseMessage());*/
+
+            return (httpUrlConn.getResponseCode() == HttpURLConnection.HTTP_OK);
+        } catch (Exception e) {
+            Toast.makeText(context, "Error: " + e.getMessage()+"type"+e.getClass().getName(),Toast.LENGTH_LONG).show();
+            return false;
+        }
+    }
 }
+
 //git
