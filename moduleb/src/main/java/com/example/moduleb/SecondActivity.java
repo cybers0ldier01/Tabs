@@ -76,7 +76,7 @@ public class SecondActivity extends Activity {
 
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(SecondActivity.this);
         alertDialog.setTitle("Oops...");
-        alertDialog.setMessage("You need to start this app from module A! It will be closed automatically in 10 seconds.");
+      //  alertDialog.setMessage("You need to start this app from module A! It will be closed automatically in 10 seconds.");
         alertDialog.setNegativeButton("Close",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -86,8 +86,9 @@ public class SecondActivity extends Activity {
         new CountDownTimer(10000, 1000) {
             @Override
             public void onTick(long l) {
-                alertDialog.setMessage("You need to start this app from module A!" + " 00:" + (l / 1000));
-            }
+                alertDialog.setMessage("You need to start this app from module A! It will be closed automatically in " + " 00:0" + (l / 1000));
+                alertDialog.show();
+                }
 
             @Override
             public void onFinish() {
