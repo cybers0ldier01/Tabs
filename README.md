@@ -6,7 +6,7 @@ This project can help you to view a picture if you have link to it. It has a con
 
 First things first, you must install both modules.
 
-<img src="http://i.imgur.com/two_modules" width="250" />
+<img src="https://i.imgur.com/pvckcj4.jpg" width="250" />
 
 
 [First module] was created to enter links and to place database.
@@ -20,7 +20,7 @@ For install our project you must have smartphone with API 21: Android 5.0 (Lolli
 
 ### Installing
 
-Click [here] to install apk-files,
+Click [here](https://github.com) to install apk-files,
 
 <img src="скрін з репозиторієм де вони лежать" width="250" />
 
@@ -33,14 +33,16 @@ and click [here] for install all project.
 
 Enter your link, and press OK:
 
-<img src="module_A_test" width="250" />
+<img src="https://i.imgur.com/ABJrK5T.jpg" width="250" />
 
 
 If everything o.k. you will see this:
 
-<img src="module_B" width="250" />
+<img src="https://i.imgur.com/l3juwwC.jpg" height="250" />
 
 After you will see message "Downloaded", a picture will already be downloaded to your devicein folder */BIGDIG/test/b/*
+
+<img src="https://i.imgur.com/wtKYeM7.jpg" height="150" />
 
 
 ## Authors
