@@ -257,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
 
                 final int id = i;
-
+                if(links.get(id).getStatus()!=4){
                 String url = links.get(id).getJust_link();
                 if(!isNetworkConnected()){
                     statAfter=3;
@@ -292,9 +292,34 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                 if (links.get(id).getStatus() == 1) {
-                    statAfter = 1;
+                    statAfter = 4;
+                    Disposable disposablen2 = io.reactivex.Observable.create(new ObservableOnSubscribe<Object>() {
+                        @Override
+                        public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
+
+                            links.get(id).setStatus(statAfter);
+                            linkRepository.updateOneLink(links.get(id).getId(),statAfter);
+                            linkAd.notifyDataSetChanged();
+                            emitter.onComplete();
+                        }
+                    })
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(new Consumer<Object>() {
+                                @Override
+                                public void accept(Object o) throws Exception {
+
+                                }
+                            }, new Consumer<Throwable>() {
+                                @Override
+                                public void accept(Throwable throwable) throws Exception {
+
+                                }
+                            });
+
+                    compositeDisposable.add(disposablen2);
                     Toast.makeText(getApplicationContext(),"URL will be deleted from DB in 15 seconds",Toast.LENGTH_LONG).show();
-                    start_alarm(links.get(id).getId());
+                    start_alarm(id);
 
                 }
 
@@ -304,6 +329,16 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("stat", statAfter);
                 intent.putExtra("from", "history");
                 startActivity(intent);
+                finish();
+                }else{
+                    Intent intent = getPackageManager().getLaunchIntentForPackage("com.example.moduleb");
+                    intent.addCategory("com.example.moduleb");
+                    intent.putExtra("url", links.get(id).getJust_link());
+                    intent.putExtra("stat", 1);
+                    intent.putExtra("from", "test");
+                    startActivity(intent);
+                    finish();
+                }
             }
         });
 
@@ -397,7 +432,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("stat", statBefore);
                 intent.putExtra("from", "test");
                 startActivity(intent);
-
+                finish();
             } else {
                 Toast.makeText(MainActivity.this, "" + "Fields must be filled", Toast.LENGTH_SHORT).show();
             }

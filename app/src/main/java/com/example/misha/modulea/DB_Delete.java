@@ -38,10 +38,10 @@ public class DB_Delete extends BroadcastReceiver {
                 try {
                     id = extras.getInt("ID_Link");
                 } catch (NullPointerException e) {
-                    id = 8;
+                   // id = 8;
                 }
 
-                linkRepository.deleteOneLink(id);
+                linkRepository.deleteOneLink(MainActivity.links.get(id).getId());
                 MainActivity.links.remove(id);
                 MainActivity.linkAd.notifyDataSetChanged();
                 //linkAd.notifyDataSetChanged();

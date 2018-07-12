@@ -78,7 +78,7 @@ public class LinkAdapter extends ArrayAdapter<MyLink> {
 
 
         //а вот тут собсн и происходит установка цвета бэкграунда по статусу ссылки (пока что стрингов)
-        if(s.getStatus()==1){
+        if(s.getStatus()==1 | s.getStatus()==4 ){
             mView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorGreenBackground));
         }
         else if(s.getStatus()==2){
