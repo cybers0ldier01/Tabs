@@ -23,8 +23,8 @@ public class LinkDataSourceClass implements LinkDataSource {
     }
 
     @Override
-    public Flowable<MyLink> getOneLink(String link) {
-        return linkDAO.getOneLink(link);
+    public Flowable<MyLink> getOneLink(int id) {
+        return linkDAO.getOneLink(id);
     }
 
     @Override
@@ -50,7 +50,8 @@ public class LinkDataSourceClass implements LinkDataSource {
     }
 
     @Override
-    public void deleteAllLinks() {
-        linkDAO.deleteAllLinks();
-    }
+    public void deleteOneLink(int id) { linkDAO.deleteOneLink(id);}
+
+    @Override
+    public void deleteAllLinks() { linkDAO.deleteAllLinks(); }
 }

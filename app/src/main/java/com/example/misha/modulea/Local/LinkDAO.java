@@ -15,8 +15,8 @@ import io.reactivex.Flowable;
 @Dao
 public interface LinkDAO {
 
-    @Query("SELECT * FROM links WHERE id=:link")
-    Flowable<MyLink> getOneLink(String link);
+    @Query("SELECT * FROM links WHERE id=:id")
+    Flowable<MyLink> getOneLink(int id);
 
     @Query("SELECT * FROM links")
     Flowable<List<MyLink>> getAllLinks();
@@ -36,4 +36,7 @@ public interface LinkDAO {
 
     @Query("DELETE FROM links")
     void deleteAllLinks();
+
+    @Query("DELETE FROM links WHERE id=:id")
+    void deleteOneLink(int id);
 }
