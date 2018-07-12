@@ -39,19 +39,14 @@ public class LinkDataSourceClass implements LinkDataSource {
         linkDAO.insertLink(links);
     }
 
-    @Override
-    public void updateLink(MyLink... links) {
-        linkDAO.updateLink(links);
-    }
-
-    @Override
-    public void deleteLink(MyLink link) {
-        linkDAO.deleteLink(link);
-    }
 
     @Override
     public void deleteOneLink(int id) { linkDAO.deleteOneLink(id);}
 
     @Override
     public void deleteAllLinks() { linkDAO.deleteAllLinks(); }
+
+    @Override
+    public void updateOneLink(int id, int stat) {linkDAO.updateOneLink(id,stat);}
+
 }

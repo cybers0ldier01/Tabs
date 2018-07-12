@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
                     public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
 
                         links.get(id).setStatus(statAfter);
-                        linkRepository.updateLink(links.get(id));
+                        linkRepository.updateOneLink(links.get(id).getId(),statAfter);
                         linkAd.notifyDataSetChanged();
                         emitter.onComplete();
                     }

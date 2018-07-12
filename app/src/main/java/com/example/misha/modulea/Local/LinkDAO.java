@@ -28,15 +28,12 @@ public interface LinkDAO {
     @Insert
     void insertLink(MyLink... links);
 
-    @Update
-    void updateLink(MyLink... links);
-
-    @Delete
-    void deleteLink(MyLink link);
-
     @Query("DELETE FROM links")
     void deleteAllLinks();
 
     @Query("DELETE FROM links WHERE id=:id")
     void deleteOneLink(int id);
+
+    @Query("UPDATE links SET status=:stat WHERE id=:id")
+    void updateOneLink(int id, int stat);
 }

@@ -41,20 +41,16 @@ public class LinkRepository implements LinkDataSource{
     }
 
     @Override
-    public void updateLink(MyLink... links) {
-        mLocalDataSource.updateLink(links);
-    }
-
-    @Override
-    public void deleteLink(MyLink link) {
-        mLocalDataSource.deleteLink(link);
-    }
-
-    @Override
     public void deleteOneLink(int id) { mLocalDataSource.deleteOneLink(id);}
 
     @Override
     public void deleteAllLinks() {
         mLocalDataSource.deleteAllLinks();
     }
+
+    @Override
+    public void updateOneLink(int id, int stat) {
+        mLocalDataSource.updateOneLink(id,stat);
+    }
+
 }
