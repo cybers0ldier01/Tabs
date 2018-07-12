@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Set;
@@ -34,6 +35,7 @@ public class SecondActivity extends Activity {
     ImageView image;
     Bundle extras;
     ProgressDialog mProgressDialog;
+    TextView tv;
     private static final int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 100;
 
     @Override
@@ -41,7 +43,7 @@ public class SecondActivity extends Activity {
         super.onCreate(savedInstanceState);
         // Get the layout from image.xml
         setContentView(R.layout.activity_second);
-
+        tv=findViewById(R.id.textView2);
         if (ActivityCompat.checkSelfPermission(SecondActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(SecondActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CONSTANT);
         }
@@ -58,8 +60,14 @@ public class SecondActivity extends Activity {
             } else{
               url = intentFromAppA.getStringExtra(LINK_TAG);
                 // Locate the ImageView in activity_main.xml
-                image = (ImageView) findViewById(R.id.image);
+                image =  findViewById(R.id.image);
+                if(image.getDrawable()==null) {
                 new UploadImage().execute(url);
+                }
+
+
+                //image.getDrawable().toString();
+
                 if(extras.getString("from").equals("history")){
                     //Toast.makeText(this,"URL will be deleted from DB in 15 seconds",Toast.LENGTH_LONG).show();
                     //start_alarm();
@@ -109,7 +117,7 @@ public class SecondActivity extends Activity {
 
     // DownloadImage AsyncTask
     private class UploadImage extends AsyncTask<String, Void, Bitmap> {
-
+        InputStream input = null;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -132,7 +140,7 @@ public class SecondActivity extends Activity {
             Bitmap bitmap = null;
             try {
                 // Download Image from URL
-                InputStream input = new java.net.URL(imageURL).openStream();
+                input = new java.net.URL(imageURL).openStream();
                 // Decode Bitmap
                 bitmap = BitmapFactory.decodeStream(input);
             } catch (Exception e) {
@@ -143,10 +151,16 @@ public class SecondActivity extends Activity {
 
         @Override
         protected void onPostExecute(Bitmap result) {
+            try{input.close();}
+            catch (IOException e){
+                Toast.makeText(getApplicationContext(),"Something went wrong",Toast.LENGTH_LONG).show();
+            }
             // Set the bitmap into ImageView
             image.setImageBitmap(result);
             // Close progressdialog
             mProgressDialog.dismiss();
+
+
         }
     }
     public void start_alarm() {
@@ -158,6 +172,32 @@ public class SecondActivity extends Activity {
         manager.set(AlarmManager.RTC_WAKEUP,new Date().getTime()+15000, pendingIntent);
     }
 
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        finish();
+    }
+    @Override
+    protected void onStop(){
+        super.onStop();
+        finish();
+    }
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        finish();
+    }
+ /*   @Override
+    protected void onResume() {
+        super.onResume();
+        onCreate(null);
+    }
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+        onCreate(null);
+    }*/
 
 }
 
