@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -36,6 +37,9 @@ public class SecondActivity extends Activity {
     ProgressDialog mProgressDialog;
     private static final int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 100;
 
+    //TODO delete this
+    Context context = this;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,12 +60,12 @@ public class SecondActivity extends Activity {
                 url =null;
                 Toast.makeText(this,"URL is not an image",Toast.LENGTH_LONG).show();
             } else{
-              url = intentFromAppA.getStringExtra(LINK_TAG);
+                url = intentFromAppA.getStringExtra(LINK_TAG);
                 // Locate the ImageView in activity_main.xml
                 image = (ImageView) findViewById(R.id.image);
                 new UploadImage().execute(url);
-                if(extras.getString("from").equals("history")){
-                    Toast.makeText(this,"URL will be deleted from DB in 15 seconds",Toast.LENGTH_LONG).show();
+                if(extras.getString("from").equals("history") && extras.getInt("stat") == 1){
+                    Toast.makeText(this,"URL will be deleted from DB at 15 seconds",Toast.LENGTH_LONG).show();
                     start_alarm();
                     DownloadImage asyncTask = new DownloadImage();
                     asyncTask.setURL(url);
@@ -116,7 +120,7 @@ public class SecondActivity extends Activity {
             // Create a progressdialog
             mProgressDialog = new ProgressDialog(SecondActivity.this);
             // Set progressdialog title
-            mProgressDialog.setTitle("Upload Image");
+            mProgressDialog.setTitle("Download image");
             // Set progressdialog message
             mProgressDialog.setMessage("Loading...");
             mProgressDialog.setIndeterminate(false);

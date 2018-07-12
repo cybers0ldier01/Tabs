@@ -1,5 +1,7 @@
 package com.example.moduleb;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -14,77 +16,57 @@ import java.net.URL;
 
 public class DownloadImage extends AsyncTask<Void, Void, Void> {
     //DOWNLOAD CLASS
-        //url setter
-        private String imageURL;
-        public void setURL(String url){
-            imageURL = url;
-        }
+    //url setter
 
-        //FEATURE
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
+    private String imageURL;
+    public void setURL(String url){
+        imageURL = url;
+    }
+    DownloadImage context = this;
+    //FEATURE
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+    }
 
-        //======================DOWNLOAD_IMAGE========================================
-        //==============TO_/storage/emulated/0/BIGDIG/B===============================
-        @Override
-        protected Void doInBackground(Void... voids) {
-            //set random name
-            int r = (int) (Math.random() * 2147483647);
-            String fileName = "image" + String.valueOf(r);
+    //======================DOWNLOAD_IMAGE========================================
+    //==============TO_/storage/emulated/0/BIGDIG/B===============================
+    @Override
+    protected Void doInBackground(Void... voids) {
+        Log.e("myLogError", "in doInBackground");
+        //SecondActivity secondActivity = new SecondActivity();
+        //Toast.makeText(secondActivity.context, "in doInBackground", Toast.LENGTH_SHORT).show();
 
-            try {
-                URL url = new URL(imageURL);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-                //path ot directory
-                File SDCardRoot = new File(Environment.getExternalStorageDirectory() + "/BIGDIG/test/B");
-                //exist check --> if dir not exist, it will create
-                if (!SDCardRoot.exists()) {
-                    SDCardRoot.mkdirs();
-                }
+        try {
+            URL url = new URL(imageURL);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.connect();
+            //path ot directory
+            File SDCardRoot = new File(Environment.getExternalStorageDirectory() + "/BIGDIG/test/B");
+
+            //exist check --> if dir not exist, it will create
+            if (!SDCardRoot.exists()) {
+                SDCardRoot.mkdirs();
+            }
+
+            //read format from url after '.'
+            int positionPoint = imageURL.lastIndexOf('.');
+            if (positionPoint == -1) {
+                Log.e("myLogError", "Error could not create image file");
+                return null;
+            }
+
+            String extension = imageURL.substring(positionPoint);
+            //set format to FileName  --> name with correct format
+            switch (extension) {
+            case ".gif": case ".png": case ".jpg": case ".jpeg": case ".bmp": case ".apng": case ".ico": case ".wmp":
+                //set random name
+                int r = (int) (Math.random() * 2147483647);
+                String fileName = "image" + String.valueOf(r) + extension;
+
                 //create image file
                 File file = new File(SDCardRoot, fileName);
-                //read format from url after '.'
-                String extension = "";
-                int i = imageURL.lastIndexOf('.');
-                if (i > 0) {
-                    extension = imageURL.substring(i + 1);
-                }
-                //set format to FileName  --> name with correct format
-                switch (extension) {
-                    case "gif":
-                        fileName += ".gif";
-                        break;
-                    case "png":
-                        fileName += ".png";
-                        break;
-                    case "jpg":
-                        fileName += ".jpg";
-                        break;
-                    case "jpeg":
-                        fileName += ".jpeg";
-                        break;
-                    case "bmp":
-                        fileName += ".bmp";
-                        break;
-                    case "apng":
-                        fileName += ".apng";
-                        break;
-                    case "ico":
-                        fileName += ".ico";
-                        break;
-                    case "wmp":
-                        fileName += ".wmp";
-                        break;
-                    default:
-                        fileName = null;
-                }
-                Log.e("myLog", "File name is "+fileName);
-
-                file = new File(SDCardRoot, fileName);
                 //start downloading image
                 FileOutputStream fileOutput = new FileOutputStream(file);
                 InputStream inputStream = urlConnection.getInputStream();
@@ -94,20 +76,25 @@ public class DownloadImage extends AsyncTask<Void, Void, Void> {
                     fileOutput.write(buffer, 0, bufferLength);
                     bufferLength = inputStream.read(buffer);
                 }
+                break;
 
-            } catch (Exception e) {
-                e.printStackTrace();
+            default:
+                Log.e("myLogError", "Error could not create image file: type image not found");
+                break;
             }
-            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        //FEATURES
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-//            Toast.makeText(getApplicationContext(), "Downloaded", Toast.LENGTH_LONG).show();
-        }
-        //================================FILE_WAS_DOWNLOADED===========================
+        return null;
     }
+
+    //FEATURES
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+     //       Toast.makeText(getApplicationContext(), "Downloaded", Toast.LENGTH_LONG).show();
+    }
+    //================================FILE_WAS_DOWNLOADED===========================
+}
 
 //git

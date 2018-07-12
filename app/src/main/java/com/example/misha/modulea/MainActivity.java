@@ -102,23 +102,24 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-private static HashMap sortByValues(HashMap map) {
-    List list = new LinkedList(map.entrySet());
-    // Defined Custom Comparator here
-    Collections.sort(list, new Comparator() {
-        public int compare(Object o1, Object o2) {
-            return ((Comparable) ((Map.Entry) (o1)).getValue()).compareTo(((Map.Entry) (o2)).getValue());
+    private static HashMap sortByValues(HashMap map) {
+        List list = new LinkedList(map.entrySet());
+        // Defined Custom Comparator here
+        Collections.sort(list, new Comparator() {
+            public int compare(Object o1, Object o2) {
+                return ((Comparable) ((Map.Entry) (o1)).getValue()).compareTo(((Map.Entry) (o2)).getValue());
+            }
+        });
+        // Here I am copying the sorted list in HashMap
+        // using LinkedHashMap to preserve the insertion order
+        HashMap sortedHashMap = new LinkedHashMap();
+        for (Iterator it = list.iterator(); it.hasNext();) {
+            Map.Entry entry = (Map.Entry) it.next();
+            sortedHashMap.put(entry.getKey(), entry.getValue());
         }
-    });
-    // Here I am copying the sorted list in HashMap
-    // using LinkedHashMap to preserve the insertion order
-    HashMap sortedHashMap = new LinkedHashMap();
-    for (Iterator it = list.iterator(); it.hasNext();) {
-        Map.Entry entry = (Map.Entry) it.next();
-        sortedHashMap.put(entry.getKey(), entry.getValue());
+        return sortedHashMap;
     }
-    return sortedHashMap;
-}
+
     private static HashMap sortByValuesBackward(HashMap map) {
         List list = new LinkedList(map.entrySet());
         // Defined Custom Comparator here
@@ -142,7 +143,7 @@ private static HashMap sortByValues(HashMap map) {
     ProgressDialog mProgressDialog;
 
 
-    //========================URL_CHECK_METHODS============================
+//========================URL_CHECK_METHODS============================
     //Returns true if url is valid
     public static boolean isValid(String url) {
         // Try creating a valid URL
@@ -154,20 +155,20 @@ private static HashMap sortByValues(HashMap map) {
         catch (Exception e) {return false;}
     }
 
-    //if url is image, return stat 1, else return 2
+    // if url is image, return stat 1, else return 2
     public static int checkURL(String u) {
-        int positionPoint = u.lastIndexOf('.');  // взнаємо позицію крапки
+        int positionPoint = u.lastIndexOf('.');  // know point position
 
-        //if '.' not found
+        // if '.' not found
         if ( positionPoint == -1 )
             return 2;   // status red
 
-//      Know expansion and check it
+        // Know expansion and check it
         switch ( u.substring(positionPoint) ) {
-//          if exspansion is image
+            // if exspansion is image
             case ".gif": case ".png": case ".jpg": case ".jpeg": case ".bmp": case ".apng": case ".ico": case ".wmp":
                 return 1;  // status green
-//          else
+            // else
             default:
                 return  2;  // status red
         }
@@ -367,6 +368,7 @@ private static HashMap sortByValues(HashMap map) {
                     startActivity(intent);
 
             }else{
+                //TODO debug it
                 Toast.makeText(MainActivity.this, "" + "Fields must be filled", Toast.LENGTH_SHORT).show();
             }
         }
