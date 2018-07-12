@@ -50,7 +50,7 @@ Module A has also second tab - History. Here user can see all URLs that are in d
 * *Ivan Zolotaryov* - 3olplay@gmail.com
 * *Andrii Fedorko* - andriy.fedorko01@gmail.com
 * *Volodymyr Panasenko* - panvovandrik@gmail.com
-* *Andriy Serbenyuk* - andriy.serb1@gmail.com
+* *Andrii Serbenyuk* - andriy.serb1@gmail.com
 * *Danil Miniailo* - daniel_changer@yahoo.com
 * *Mihail Samsonenko* - michaeldark49a@gmail.com
 
