@@ -1,46 +1,46 @@
 # Image Viewer
 
-This project can help you to view a picture if you have link to it. It has a convenient and intuitive interface. 
+This project can help user with viewing a picture if user has link for image. App has a convenient and intuitive interface. 
 
 ## Getting Started
 
-First things first, you must install both modules.
+At first, user should install both modules.
 
 <img src="https://i.imgur.com/pvckcj4.jpg" width="250" />
 
 
-[First module] was created to enter links and to place database.
-[Second module] was created to view a picture and to make database changes in [module_A].
+[First module] is created to input URLs and to work with SQLite database.
+[Second module] is created to show an image and to make changes in database of [module_A].
 
-Always run module_A first! Module_B is not independent program!
+Attention! User always must run module_A first! Module_B is not independent program!
 
 ### Prerequisites
 
-For install our project you must have smartphone with API 21: Android 5.0 (Lollipop) and higher.
+To install our project user should have device with API 21: Android 5.0 (Lollipop) or higher.
 
 ### Installing
 
-Click [here](https://github.com) to install apk-files,
+Click [here](https://github.com) to download apk-files,
 
 <img src="скрін з репозиторієм де вони лежать" width="250" />
 
 
-and click [here] for install all project.
+and click [here] to download whole project.
 
 <img src="скрін з репозиторієм 2" width="250" />
 
 ### How to use it
 
-Enter your link, and press OK:
+User should input URL and press OK:
 
 <img src="https://i.imgur.com/ABJrK5T.jpg" width="250" />
 
 
-If everything o.k. you will see this:
+If everything is fine, user will see this:
 
 <img src="https://i.imgur.com/l3juwwC.jpg" height="250" />
 
-After you will see message "Downloaded", a picture will already be downloaded to your devicein folder */BIGDIG/test/b/*
+Module A has also second tab - History. Here user can see all URLs that are in database. Every URL has his own status - downloaded, failed or unknown. If URL in History is red - this URL is not an image or this URL doesn't exist. And if it is green - it was downloaded fine. If URL is transparent, so checking of URL or downloading of image was failed. In this tab user may sort links by date or by status. User may go to ModuleB by clicking on the URL in History. Module B will recheck status of this link, and if it is green, URL would be deleted from the database in 15 seconds, but image would be saved in /sdcard/BIGDIG/test/B. User will get message about this action.
 
 <img src="https://i.imgur.com/wtKYeM7.jpg" height="150" />
 
@@ -51,6 +51,7 @@ After you will see message "Downloaded", a picture will already be downloaded to
 * *Andrii Fedorko* - andriy.fedorko01@gmail.com
 * *Volodymyr Panasenko* - panvovandrik@gmail.com
 * *Andriy Serbenyuk* - andriy.serb1@gmail.com
-* *Daniel Minyaylo* - daniel_changer@yahoo.com
+* *Danil Miniailo* - daniel_changer@yahoo.com
+* *Mihail Samsonenko* - michaeldark49a@gmail.com
 
 *this page not done...yet*

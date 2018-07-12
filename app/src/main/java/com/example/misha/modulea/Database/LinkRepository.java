@@ -23,8 +23,8 @@ public class LinkRepository implements LinkDataSource{
     }
 
     @Override
-    public Flowable<MyLink> getOneLink(String link) {
-        return mLocalDataSource.getOneLink(link);
+    public Flowable<MyLink> getOneLink(int id) {
+        return mLocalDataSource.getOneLink(id);
     }
 
     @Override
@@ -41,17 +41,16 @@ public class LinkRepository implements LinkDataSource{
     }
 
     @Override
-    public void updateLink(MyLink... links) {
-        mLocalDataSource.updateLink(links);
-    }
-
-    @Override
-    public void deleteLink(MyLink link) {
-        mLocalDataSource.deleteLink(link);
-    }
+    public void deleteOneLink(int id) { mLocalDataSource.deleteOneLink(id);}
 
     @Override
     public void deleteAllLinks() {
         mLocalDataSource.deleteAllLinks();
     }
+
+    @Override
+    public void updateOneLink(int id, int stat) {
+        mLocalDataSource.updateOneLink(id,stat);
+    }
+
 }
