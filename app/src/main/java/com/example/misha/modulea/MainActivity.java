@@ -8,9 +8,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -37,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -166,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //if url is image, return stat 1, else if url web-site or video return 2
-    public static int checkURL(String u) throws IOException {
+    public int checkURL(String u) throws IOException {
         int status;
         String format = "";
         String extension = "";
@@ -202,8 +205,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         if (format.equals(extension)) {
-
-            status = 1;
+            status=1;
 
 
         } else {
@@ -223,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CONSTANT);
         }
+        enableStrictMode();
         context = getApplicationContext();
         compositeDisposable = new CompositeDisposable();
         LinkDatabase linkDatabase = LinkDatabase.getInstance(this);
@@ -256,11 +259,14 @@ public class MainActivity extends AppCompatActivity {
                 final int id = i;
 
                 String url = links.get(id).getJust_link();
-
-                try {
-                    statAfter = checkURL(url);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if(!isNetworkConnected()){
+                    statAfter=3;
+                }else{
+                    try {
+                        statAfter = checkURL(url);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 Disposable disposablen = io.reactivex.Observable.create(new ObservableOnSubscribe<Object>() {
                     @Override
@@ -343,8 +349,14 @@ public class MainActivity extends AppCompatActivity {
     int statBefore;
 
     public void downloadImageFromUrl(View view) throws IOException {
-        String field = tv.getText().toString();
-        statBefore = checkURL(field);
+            String field = tv.getText().toString();
+        if(!isNetworkConnected()){statBefore=3;}else{
+            enableStrictMode();
+            statBefore = checkURL(field);
+            if(statBefore==1){
+                statBefore = checkUrlExist(field);
+            }
+        }
 
         if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "No Permission", Toast.LENGTH_SHORT).show();
@@ -392,26 +404,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static boolean checkIfURLExists(String targetUrl) {
-        HttpURLConnection httpUrlConn;
+    public int checkUrlExist(String str) throws IOException{
+        int statusCode=0;
+        URL url = new URL(str);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         try {
-            httpUrlConn = (HttpURLConnection) new URL(targetUrl)
-                    .openConnection();
+            connection.connect();
+            statusCode = connection.getResponseCode();
+            //System.out.println(statusCode);
+        }
+        catch (UnknownHostException e)
+        {
+            Toast.makeText(this,"Host not found",Toast.LENGTH_SHORT).show();
+            return 2;
+        }
 
-            httpUrlConn.setRequestMethod("HEAD");
 
-            httpUrlConn.setConnectTimeout(1000);
-            httpUrlConn.setReadTimeout(1000);
-
-            /*System.out.println("Response Code: "
-                    + httpUrlConn.getResponseCode());
-            System.out.println("Response Message: "
-                    + httpUrlConn.getResponseMessage());*/
-
-            return (httpUrlConn.getResponseCode() == HttpURLConnection.HTTP_OK);
-        } catch (Exception e) {
-            Toast.makeText(context, "Error: " + e.getMessage() + "type" + e.getClass().getName(), Toast.LENGTH_LONG).show();
-            return false;
+        if(statusCode == 404){
+            Toast.makeText(this,"404",Toast.LENGTH_SHORT).show();
+            return 2;
+        }else{
+            Toast.makeText(this,"Fine "+Integer.toString(statusCode),Toast.LENGTH_SHORT).show();
+            return 1;
         }
     }
 
@@ -423,9 +437,19 @@ public class MainActivity extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, myIntent, 0);
 
         manager.set(AlarmManager.RTC_WAKEUP, new Date().getTime() + 15000, pendingIntent);
-
-
     }
+    public void enableStrictMode()
+    {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
+    }
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
+    }
+
 }
 
 
