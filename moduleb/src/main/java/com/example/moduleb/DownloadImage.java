@@ -3,6 +3,7 @@ package com.example.moduleb;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
@@ -81,6 +82,8 @@ public class DownloadImage extends AsyncTask<Void, Void, Void> {
                     default:
                         fileName = null;
                 }
+                Log.e("myLog", "File name is "+fileName);
+
                 file = new File(SDCardRoot, fileName);
                 //start downloading image
                 FileOutputStream fileOutput = new FileOutputStream(file);

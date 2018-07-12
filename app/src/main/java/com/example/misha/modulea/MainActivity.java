@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 for(MyLink loc : links){ status_sort.put(loc, loc.getStatus());}
                 Map<MyLink, Integer> map = sortByValues((HashMap) status_sort);
                 links = new ArrayList<>(map.keySet());
-                linkAd = new LinkAdapter(this, R.layout.item, links );
+                linkAd = new LinkAdapter(this, android.R.layout.activity_list_item, links );
                 lv.setAdapter(linkAd);
                 Toast.makeText(getApplicationContext(), "Sort by status", Toast.LENGTH_SHORT).show();
                 break;
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 for(MyLink loc : links){ status_date.put(loc, loc.getDate());}
                 Map<MyLink, Integer> map1 = sortByValuesBackward((HashMap) status_date);
                 links = new ArrayList<>(map1.keySet());
-                linkAd = new LinkAdapter(this, R.layout.item, links );
+                linkAd = new LinkAdapter(this, android.R.layout.activity_list_item, links );
                 lv.setAdapter(linkAd);
                 Toast.makeText(getApplicationContext(), "Sort by date", Toast.LENGTH_SHORT).show();
                 break;
@@ -153,51 +154,23 @@ private static HashMap sortByValues(HashMap map) {
         catch (Exception e) {return false;}
     }
 
-    //if url is image, return stat 1, else if url web-site or video return 2
-    public static int checkURL(String u) throws IOException {
-        int status;
-        String format = "";
-        String extension = "";
-        int i = u.lastIndexOf('.');
-        if (i > 0) {
-            extension = u.substring(i + 1);
-        }
-        //set format to FileName  --> name with correct format
-        switch (extension) {
-            case "gif":
-                format += "gif";
-                break;
-            case "png":
-                format += "png";
-                break;
-            case "jpg":
-                format += "jpg";
-                break;
-            case "jpeg":
-                format += "jpeg";
-                break;
-            case "bmp":
-                format += "bmp";
-                break;
-            case "apng":
-                format += "apng";
-                break;
-            case "ico":
-                format += "ico";
-                break;
-            case "wmp":
-                format += "wmp";
-                break;
-        }
-        if(format.equals(extension)){
+    //if url is image, return stat 1, else return 2
+    public static int checkURL(String u) {
+        int positionPoint = u.lastIndexOf('.');  // взнаємо позицію крапки
 
-                status = 1;
+        //if '.' not found
+        if ( positionPoint == -1 )
+            return 2;   // status red
 
-
-        }else{
-            status = 2;
+//      Know expansion and check it
+        switch ( u.substring(positionPoint) ) {
+//          if exspansion is image
+            case ".gif": case ".png": case ".jpg": case ".jpeg": case ".bmp": case ".apng": case ".ico": case ".wmp":
+                return 1;  // status green
+//          else
+            default:
+                return  2;  // status red
         }
-        return status;
     }
 //==============================================================================
 
@@ -245,11 +218,8 @@ private static HashMap sortByValues(HashMap map) {
 
                 String url = links.get(id).getJust_link();
 
-                try {
-                    statAfter = checkURL(url);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                statAfter = checkURL(url);
+
                 Disposable disposablen = io.reactivex.Observable.create(new ObservableOnSubscribe<Object>() {
                     @Override
                     public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
