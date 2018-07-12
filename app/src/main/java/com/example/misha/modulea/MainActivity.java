@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 lv.setAdapter(linkAd);
                 Toast toast4 = Toast.makeText(getApplicationContext(), "Sort by status", Toast.LENGTH_SHORT);
                 toast4.show();
-
+                break;
             case R.id.date:
                 for (MyLink loc : links) {
                     status_date.put(loc, loc.getDate());

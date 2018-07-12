@@ -36,6 +36,8 @@ public class SecondActivity extends Activity {
     Bundle extras;
     ProgressDialog mProgressDialog;
     TextView tv;
+    AlertDialog alertD;
+    CountDownTimer localTimer;
     private static final int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 100;
 
     @Override
@@ -83,29 +85,44 @@ public class SecondActivity extends Activity {
     public void DialogWindow() {
 
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(SecondActivity.this);
+        alertDialog.setCancelable(false);
         alertDialog.setTitle("Oops...");
       //  alertDialog.setMessage("You need to start this app from module A! It will be closed automatically in 10 seconds.");
-        alertDialog.setNegativeButton("Close",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        finish();
-                    }
-                });
-        new CountDownTimer(10000, 1000) {
+        alertDialog.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                alertD.dismiss();
+                localTimer.cancel();
+                finish();
+
+            }
+        });
+        alertD = alertDialog.create();
+        alertD.setCancelable(false);
+
+        localTimer = new CountDownTimer(10000, 1000) {
             @Override
             public void onTick(long l) {
-                alertDialog.setMessage("You need to start this app from module A! It will be closed automatically in " + " 00:0" + (l / 1000));
-                alertDialog.show();
+                alertD.setMessage("You need to start this app from module A! It will be closed automatically in " + " 00:0" + (l / 1000));
+                alertD.show();
                 }
 
             @Override
             public void onFinish() {
+                alertD.dismiss();
                 finish();
+                moveTaskToBack(true);
             }
         }.start();
-        alertDialog.show();
-    }
 
+
+    }
+    public void shutDown_Dialog(){
+        if(alertD!=null){
+            alertD.dismiss();
+            localTimer.cancel();
+        }
+    }
     private boolean checking(Intent intent) {
         Set<String> ss = intent.getCategories();
         for (String temp : ss) {
@@ -175,16 +192,19 @@ public class SecondActivity extends Activity {
 
     @Override
     protected void onPause(){
+        shutDown_Dialog();
         super.onPause();
         finish();
     }
     @Override
     protected void onStop(){
+        shutDown_Dialog();
         super.onStop();
         finish();
     }
     @Override
     protected void onDestroy(){
+        shutDown_Dialog();
         super.onDestroy();
         finish();
     }
