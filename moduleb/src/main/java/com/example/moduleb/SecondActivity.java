@@ -64,9 +64,8 @@ public class SecondActivity extends Activity {
                 // Locate the ImageView in activity_main.xml
                 image = (ImageView) findViewById(R.id.image);
                 new UploadImage().execute(url);
+
                 if(extras.getString("from").equals("history") && extras.getInt("stat") == 1){
-                    Toast.makeText(this,"URL will be deleted from DB at 15 seconds",Toast.LENGTH_LONG).show();
-                    start_alarm();
                     DownloadImage asyncTask = new DownloadImage();
                     asyncTask.setURL(url);
                     asyncTask.execute();

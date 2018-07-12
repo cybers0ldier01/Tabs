@@ -23,7 +23,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity><receiver android:name=".DB_Delete" />
     </application>
 
 </manifest>

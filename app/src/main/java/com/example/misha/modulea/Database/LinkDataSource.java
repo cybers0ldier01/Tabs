@@ -9,11 +9,11 @@ import io.reactivex.Flowable;
 
 public interface LinkDataSource {
 
-    Flowable<MyLink> getOneLink(String link);
+    Flowable<MyLink> getOneLink(int id);
     Flowable<List<MyLink>> getAllLinks();
     Flowable<List<MyLink>> getAllLinksOrderByStatus();
     void insertLink(MyLink... links);
-    void updateLink(MyLink... links);
-    void deleteLink(MyLink link);
+    void deleteOneLink(int id);
     void deleteAllLinks();
+    void updateOneLink(int id, int stat);
 }

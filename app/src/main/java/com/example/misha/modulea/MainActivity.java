@@ -1,7 +1,10 @@
 package com.example.misha.modulea;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -59,42 +62,50 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
     ImageButton button;
-    LinkAdapter linkAd;
+    static LinkAdapter linkAd;
     TabHost tabHost;
     public static final String EXTRA_MESSAGE = "com.example.misha.modulea.MESSAGE";
     Button btn;
     TextView tv;
     static Context context;
-    List<MyLink> links = new ArrayList<>();
-   // ArrayList<MyLink> local;
+    static List<MyLink> links = new ArrayList<>();
+    // ArrayList<MyLink> local;
     Map<MyLink, Integer> status_sort = new HashMap<>();
     Map<MyLink, String> status_date = new HashMap<>();
     ListView lv;
     private CompositeDisposable compositeDisposable;
     private LinkRepository linkRepository;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main2, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.status:
-                for(MyLink loc : links){ status_sort.put(loc, loc.getStatus());}
+                for (MyLink loc : links) {
+                    status_sort.put(loc, loc.getStatus());
+                }
                 Map<MyLink, Integer> map = sortByValues((HashMap) status_sort);
                 links = new ArrayList<>(map.keySet());
-                linkAd = new LinkAdapter(this, android.R.layout.activity_list_item, links );
+
+                linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links);
+
                 lv.setAdapter(linkAd);
                 Toast.makeText(getApplicationContext(), "Sort by status", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.date:
-                for(MyLink loc : links){ status_date.put(loc, loc.getDate());}
+                for (MyLink loc : links) {
+                    status_date.put(loc, loc.getDate());
+                }
                 Map<MyLink, Integer> map1 = sortByValuesBackward((HashMap) status_date);
                 links = new ArrayList<>(map1.keySet());
-                linkAd = new LinkAdapter(this, android.R.layout.activity_list_item, links );
+                linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links);
                 lv.setAdapter(linkAd);
                 Toast.makeText(getApplicationContext(), "Sort by date", Toast.LENGTH_SHORT).show();
                 break;
@@ -113,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
         // Here I am copying the sorted list in HashMap
         // using LinkedHashMap to preserve the insertion order
         HashMap sortedHashMap = new LinkedHashMap();
+
         for (Iterator it = list.iterator(); it.hasNext();) {
             Map.Entry entry = (Map.Entry) it.next();
             sortedHashMap.put(entry.getKey(), entry.getValue());
@@ -132,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         // Here I am copying the sorted list in HashMap
         // using LinkedHashMap to preserve the insertion order
         HashMap sortedHashMap = new LinkedHashMap();
-        for (Iterator it = list.iterator(); it.hasNext();) {
+        for (Iterator it = list.iterator(); it.hasNext(); ) {
             Map.Entry entry = (Map.Entry) it.next();
             sortedHashMap.put(entry.getKey(), entry.getValue());
         }
@@ -152,7 +164,9 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         // If there was an Exception while creating URL object
-        catch (Exception e) {return false;}
+        catch (Exception e) {
+            return false;
+        }
     }
 
     // if url is image, return stat 1, else return 2
@@ -176,8 +190,8 @@ public class MainActivity extends AppCompatActivity {
 //==============================================================================
 
 
-
     int statAfter = 3;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -185,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CONSTANT);
         }
-        MainActivity.context = getApplicationContext();
+        context = getApplicationContext();
         compositeDisposable = new CompositeDisposable();
         LinkDatabase linkDatabase = LinkDatabase.getInstance(this);
         linkRepository = LinkRepository.getmInstance(LinkDataSourceClass.getInstance(linkDatabase.linkDAO()));
@@ -209,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         lv = (ListView) findViewById(R.id.listview); // находим список
-        linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links );
+        linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links);
         lv.setAdapter(linkAd);   // присваиваем адаптер списку
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -226,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
                     public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
 
                         links.get(id).setStatus(statAfter);
-                        linkRepository.updateLink(links.get(id));
+                        linkRepository.updateOneLink(links.get(id).getId(),statAfter);
                         linkAd.notifyDataSetChanged();
                         emitter.onComplete();
                     }
@@ -244,32 +258,10 @@ public class MainActivity extends AppCompatActivity {
 
                             }
                         });
-                if(links.get(id).getStatus()==1){
-                    statAfter =1;
-                    Disposable disposable = io.reactivex.Observable.create(new ObservableOnSubscribe<Object>() {
-                        @Override
-                        public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
-
-
-                            linkRepository.deleteLink(links.get(id));
-                            links.remove(id);
-                            linkAd.notifyDataSetChanged();
-                            emitter.onComplete();
-                        }
-                    })
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeOn(Schedulers.io())
-                            .subscribe(new Consumer<Object>() {
-                                @Override
-                                public void accept(Object o) throws Exception {
-
-                                }
-                            }, new Consumer<Throwable>() {
-                                @Override
-                                public void accept(Throwable throwable) throws Exception {
-
-                                }
-                            });
+                if (links.get(id).getStatus() == 1) {
+                    statAfter = 1;
+                    Toast.makeText(getApplicationContext(),"URL will be deleted from DB in 15 seconds",Toast.LENGTH_LONG).show();
+                    start_alarm(links.get(id).getId());
 
                 }
 
@@ -291,8 +283,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar_history));
 
 
-
-        }
+    }
 
     private void loadData() {
 
@@ -307,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        Toast.makeText(MainActivity.this,""+throwable.getMessage(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -323,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     int statBefore;
+
     public void downloadImageFromUrl(View view) throws IOException {
         String field = tv.getText().toString();
         statBefore = checkURL(field);
@@ -360,15 +352,14 @@ public class MainActivity extends AppCompatActivity {
                     });
 
             if (isValid(field)) {
-                    Intent intent = getPackageManager().getLaunchIntentForPackage("com.example.moduleb");
-                    intent.addCategory("com.example.moduleb");
-                    intent.putExtra("url", tv.getText().toString());
-                    intent.putExtra("stat", statBefore);
-                    intent.putExtra("from", "test");
-                    startActivity(intent);
+                Intent intent = getPackageManager().getLaunchIntentForPackage("com.example.moduleb");
+                intent.addCategory("com.example.moduleb");
+                intent.putExtra("url", tv.getText().toString());
+                intent.putExtra("stat", statBefore);
+                intent.putExtra("from", "test");
+                startActivity(intent);
 
-            }else{
-                //TODO debug it
+            } else {
                 Toast.makeText(MainActivity.this, "" + "Fields must be filled", Toast.LENGTH_SHORT).show();
             }
         }
@@ -392,10 +383,26 @@ public class MainActivity extends AppCompatActivity {
 
             return (httpUrlConn.getResponseCode() == HttpURLConnection.HTTP_OK);
         } catch (Exception e) {
-            Toast.makeText(context, "Error: " + e.getMessage()+"type"+e.getClass().getName(),Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Error: " + e.getMessage() + "type" + e.getClass().getName(), Toast.LENGTH_LONG).show();
             return false;
         }
     }
+
+    public void start_alarm(int id) {
+        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        Intent myIntent = new Intent(this, DB_Delete.class);
+        myIntent.putExtra("ID_Link", id);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, myIntent, 0);
+
+        manager.set(AlarmManager.RTC_WAKEUP, new Date().getTime() + 15000, pendingIntent);
+
+
+    }
 }
+
+
+
+
 
 //git
