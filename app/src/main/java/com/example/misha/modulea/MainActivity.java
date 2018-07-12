@@ -84,19 +84,19 @@ public class MainActivity extends AppCompatActivity {
                 for(MyLink loc : links){ status_sort.put(loc, loc.getStatus());}
                 Map<MyLink, Integer> map = sortByValues((HashMap) status_sort);
                 links = new ArrayList<>(map.keySet());
-                linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links );
+                linkAd = new LinkAdapter(this, R.layout.item, links );
                 lv.setAdapter(linkAd);
-                Toast toast4 = Toast.makeText(getApplicationContext(), "Sort by status", Toast.LENGTH_SHORT);
-                toast4.show();
+                Toast.makeText(getApplicationContext(), "Sort by status", Toast.LENGTH_SHORT).show();
+                break;
 
             case R.id.date:
                 for(MyLink loc : links){ status_date.put(loc, loc.getDate());}
                 Map<MyLink, Integer> map1 = sortByValuesBackward((HashMap) status_date);
                 links = new ArrayList<>(map1.keySet());
-                linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links );
+                linkAd = new LinkAdapter(this, R.layout.item, links );
                 lv.setAdapter(linkAd);
-                Toast toast1 = Toast.makeText(getApplicationContext(), "Sort by date", Toast.LENGTH_SHORT);
-                toast1.show();
+                Toast.makeText(getApplicationContext(), "Sort by date", Toast.LENGTH_SHORT).show();
+                break;
         }
         return true;
     }
