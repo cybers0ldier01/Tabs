@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Movie;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.support.v4.app.ActivityCompat;
@@ -38,6 +39,8 @@ public class SecondActivity extends Activity {
     TextView tv;
     AlertDialog alertD;
     CountDownTimer localTimer;
+    static InputStream input = null;
+
     private static final int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 100;
 
     @Override
@@ -61,11 +64,13 @@ public class SecondActivity extends Activity {
                 Toast.makeText(this,"URL is not an image",Toast.LENGTH_LONG).show();
             } else{
               url = intentFromAppA.getStringExtra(LINK_TAG);
-                // Locate the ImageView in activity_main.xml
-                image =  findViewById(R.id.image);
-                if(image.getDrawable()==null) {
-                new UploadImage().execute(url);
-                }
+
+                    // Locate the ImageView in activity_main.xml
+                    image =  findViewById(R.id.image);
+                    if(image.getDrawable()==null) {
+                    new UploadImage().execute(url);
+                    }
+                //}
 
 
                 //image.getDrawable().toString();
@@ -77,6 +82,8 @@ public class SecondActivity extends Activity {
                     asyncTask.setURL(url);
                     asyncTask.execute();
                 }
+
+
             }
         }
     }
@@ -133,17 +140,18 @@ public class SecondActivity extends Activity {
     //=================================
 
     // DownloadImage AsyncTask
-    private class UploadImage extends AsyncTask<String, Void, Bitmap> {
-        InputStream input = null;
+    public class UploadImage extends AsyncTask<String, Void, Bitmap> {
+
+        String imageURL;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             // Create a progressdialog
             mProgressDialog = new ProgressDialog(SecondActivity.this);
             // Set progressdialog title
-            mProgressDialog.setTitle("Upload Image");
+            mProgressDialog.setTitle("Preparing to show an image");
             // Set progressdialog message
-            mProgressDialog.setMessage("Loading...");
+            mProgressDialog.setMessage("Downloading...");
             mProgressDialog.setIndeterminate(false);
             // Show progressdialog
             mProgressDialog.show();
@@ -152,14 +160,17 @@ public class SecondActivity extends Activity {
         @Override
         protected Bitmap doInBackground(String... URL) {
 
-            String imageURL = URL[0];
+            imageURL = URL[0];
 
             Bitmap bitmap = null;
             try {
                 // Download Image from URL
                 input = new java.net.URL(imageURL).openStream();
                 // Decode Bitmap
+
+
                 bitmap = BitmapFactory.decodeStream(input);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -172,23 +183,17 @@ public class SecondActivity extends Activity {
             catch (IOException e){
                 Toast.makeText(getApplicationContext(),"Something went wrong",Toast.LENGTH_LONG).show();
             }
+
+
             // Set the bitmap into ImageView
             image.setImageBitmap(result);
             // Close progressdialog
             mProgressDialog.dismiss();
 
 
+
         }
     }
-    public void start_alarm() {
-        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-        Intent myIntent = new Intent(this, Alarm.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, myIntent, 0);
-
-        manager.set(AlarmManager.RTC_WAKEUP,new Date().getTime()+15000, pendingIntent);
-    }
-
 
     @Override
     protected void onPause(){
@@ -208,16 +213,6 @@ public class SecondActivity extends Activity {
         super.onDestroy();
         finish();
     }
- /*   @Override
-    protected void onResume() {
-        super.onResume();
-        onCreate(null);
-    }
-    @Override
-    protected void onRestart(){
-        super.onRestart();
-        onCreate(null);
-    }*/
 
 }
 
