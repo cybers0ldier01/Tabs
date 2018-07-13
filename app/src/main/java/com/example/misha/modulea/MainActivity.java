@@ -426,7 +426,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             } else {
-               Toast.makeText(MainActivity.this, "" + "Field must be filled with URL!", Toast.LENGTH_SHORT).show();
+               Toasty.error(MainActivity.this, "" + "Field must be filled with URL!", Toast.LENGTH_SHORT).show();
 
             }
 

@@ -16,9 +16,9 @@
         android:id="@+id/glideImageView"
 
         app:error_res="@drawable/error"
-        app:placeholder_res="@drawable/loading"
-        app:show_progress="true"
+        app:show_progress="false"
         />
+    <!--app:placeholder_res="@drawable/loading"-->
 
 
     <ImageView
