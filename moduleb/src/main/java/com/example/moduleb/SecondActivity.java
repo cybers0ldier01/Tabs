@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
+import android.os.StrictMode;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import com.master.glideimageview.GlideImageView;
 
 import es.dmoral.toasty.Toasty;
 
@@ -74,9 +76,25 @@ public class SecondActivity extends Activity {
               url = intentFromAppA.getStringExtra(LINK_TAG);
 
                     image =  findViewById(R.id.image);
-                    if(image.getDrawable()==null) {
-                    new UploadImage().execute(url);
+
+                    String extension = "";
+                    int i = url.lastIndexOf('.');
+                    if (i > 0) {
+                        extension = url.substring(i + 1);
                     }
+
+                    if(image.getDrawable()==null) {
+                        if(extension.equals("gif")){
+                            enableStrictMode();
+                            GlideImageView glideImageView;
+                            glideImageView =  findViewById(R.id.glideImageView);
+                            glideImageView.loadImageUrl(url);
+
+                        }else{
+                        new UploadImage().execute(url);}
+
+                    }
+
 
 
 
@@ -218,6 +236,12 @@ public class SecondActivity extends Activity {
         shutDown_Dialog();
         super.onDestroy();
         finish();
+    }
+    public void enableStrictMode()
+    {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
     }
 
 }
