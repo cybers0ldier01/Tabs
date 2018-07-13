@@ -102,7 +102,6 @@ public class DownloadImage extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-//            Toast.makeText(getApplicationContext(), "Downloaded", Toast.LENGTH_LONG).show();
         }
         //================================FILE_WAS_DOWNLOADED===========================
     }

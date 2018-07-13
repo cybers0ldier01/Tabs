@@ -26,8 +26,12 @@ android {
 }
 
 dependencies {
+    //=======DESIGN=======
+    implementation 'com.github.GrenderG:Toasty:1.3.0'
+    implementation 'com.github.ceryle:RadioRealButton:v2.1.1'
+    implementation 'com.taishi-y:flipprogressdialog:0.1.0'
+    //====================
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     implementation 'com.android.support:appcompat-v7:28.0.0-alpha3'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     testImplementation 'junit:junit:4.12'
