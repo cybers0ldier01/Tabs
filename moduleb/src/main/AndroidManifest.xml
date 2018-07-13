@@ -16,8 +16,7 @@
         android:roundIcon="@mipmap/app_b_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SecondActivity"
-            android:hardwareAccelerated="false">
+        <activity android:name=".SecondActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
