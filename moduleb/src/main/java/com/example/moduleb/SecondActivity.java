@@ -46,8 +46,7 @@ public class SecondActivity extends Activity {
     Bundle extras;
     AlertDialog alertD;
     CountDownTimer localTimer;
-    static InputStream input = null;
-
+    String imageURL;
     private static final int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 100;
 
     RelativeLayout Alayout;
@@ -179,7 +178,7 @@ public class SecondActivity extends Activity {
             flip.setBackgroundAlpha(0.2f);
             flip.setCornerRadius(32);
             flip.setDuration(800);
-            flip.setIndeterminate(false);
+            flip.setCancelable(false);
             flip.show(getFragmentManager(), "");
         }
 
@@ -217,18 +216,7 @@ public class SecondActivity extends Activity {
             flip.dismiss();
         }
     }
-    public void start_alarm() {
-        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-        Intent myIntent = new Intent(this, Alarm.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, myIntent, 0);
-
-            mProgressDialog.dismiss();
-
-
-
-        }
-    }
 
     @Override
     protected void onPause(){

@@ -155,7 +155,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static final int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 100;
-    ProgressDialog mProgressDialog;
 
 
     //========================URL_CHECK_METHODS============================
