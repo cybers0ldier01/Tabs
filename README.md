@@ -20,7 +20,7 @@ To install our project user should have device with API 21: Android 5.0 (Lollipo
 
 ### Installing
 
-Click [here](https://github.com) to download apk-files, and click [here](https://github.com/TrueDevels/Tabs/tree/Ivan_Branch) to download whole project.
+Click [here](https://github.com/TrueDevels/Tabs) to download apk-files, and click [here](https://github.com/TrueDevels/Tabs) to download whole project.
 
 <img src="https://i.imgur.com/7QWDUbW.png" />
 
