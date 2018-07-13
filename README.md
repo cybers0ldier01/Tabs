@@ -9,10 +9,10 @@ At first, user should install both modules.
 <img src="https://i.imgur.com/GnGa3Aq.png" width="250" />
 
 
-[First module] is created to input URLs and to work with SQLite database.
-[Second module] is created to show an image and to make changes in database of [module_A].
+Image Manager (first module A) is created to input URLs and to work with SQLite database.
+Image Viewer (second module B) is created to show images and save them on device.
 
-Attention! User always must run module_A first! Module_B is not independent program!
+Attention! User always must run Image Manager first! Image Viewer is not independent program!
 
 ### Prerequisites
 
