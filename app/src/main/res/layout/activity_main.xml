@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:layout_alignParentStart="true"
     android:layout_alignParentTop="true"
+    android:background="@drawable/animation"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -11,7 +12,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorAppBackground"
         android:orientation="vertical">
 
         <FrameLayout
@@ -38,7 +38,7 @@
                     android:id="@+id/toolbar_test"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
+                    android:background="@android:color/transparent"
                     android:elevation="4dp"
                     android:theme="@style/AppTheme.AppBarOverlay"
                     app:popupTheme="@style/AppTheme.PopupOverlay" />
@@ -59,6 +59,9 @@
                             android:layout_height="match_parent"
                             android:layout_margin="8dp"
                             android:hint="@string/enter_your_link"
+                            android:textColor="#ffffff"
+                            android:textColorHint="#b6aaaa"
+                            android:textAlignment="center"
                             android:inputType=""
                             android:textSize="30sp" />
                     </LinearLayout>
@@ -66,16 +69,16 @@
 
                 <Button
                     android:id="@+id/button"
-                    android:layout_width="match_parent"
+                    android:layout_width="250dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:background="@color/colorButtonBackground"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/animation_button"
+                    android:layout_gravity="center_vertical|center_horizontal"
                     android:onClick="downloadImageFromUrl"
                     android:text="@string/ok_btn_text"
                     android:textAlignment="center"
                     android:textColor="@color/colorButtonText"
                     android:textSize="34sp" />
-
 
             </LinearLayout>
 
@@ -91,7 +94,7 @@
                     android:id="@+id/toolbar_history"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorPrimary"
+                    android:background="@android:color/transparent"
                     android:elevation="4dp"
                     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light">

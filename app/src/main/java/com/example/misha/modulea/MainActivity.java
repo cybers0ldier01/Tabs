@@ -7,12 +7,15 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -53,6 +56,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -96,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 links = new ArrayList<>(map.keySet());
                 linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links);
                 lv.setAdapter(linkAd);
-                Toast toast4 = Toast.makeText(getApplicationContext(), "Sort by status", Toast.LENGTH_SHORT);
+                Toast toast4 = Toasty.info(getApplicationContext(), "Sort by status", Toast.LENGTH_SHORT);
                 toast4.show();
                 break;
             case R.id.date:
@@ -107,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 links = new ArrayList<>(map1.keySet());
                 linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links);
                 lv.setAdapter(linkAd);
-                Toast toast1 = Toast.makeText(getApplicationContext(), "Sort by date", Toast.LENGTH_SHORT);
+                Toast toast1 = Toasty.info(getApplicationContext(), "Sort by date", Toast.LENGTH_SHORT);
                 toast1.show();
         }
         return true;
@@ -215,6 +219,8 @@ public class MainActivity extends AppCompatActivity {
     }
 //==============================================================================
 
+    TabHost Alayout;
+    AnimationDrawable animationDrawable;
 
     int statAfter = 3;
 
@@ -225,6 +231,17 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CONSTANT);
         }
+
+        //=============GRADIENT_DESIGN================
+
+        Alayout = (TabHost) findViewById(R.id.tabHost);
+        animationDrawable = (AnimationDrawable) Alayout.getBackground();
+        animationDrawable.setEnterFadeDuration(4500);
+        animationDrawable.setExitFadeDuration(4500);
+        animationDrawable.start();
+
+        //============================================
+
         enableStrictMode();
         context = getApplicationContext();
         compositeDisposable = new CompositeDisposable();
@@ -318,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
                             });
 
                     compositeDisposable.add(disposablen2);
-                    Toast.makeText(getApplicationContext(),"URL will be deleted from DB in 15 seconds",Toast.LENGTH_LONG).show();
+                    Toasty.info(getApplicationContext(),"URL will be deleted from DB in 15 seconds",Toast.LENGTH_LONG).show();
                     start_alarm(id);
 
                 }
@@ -366,7 +383,7 @@ public class MainActivity extends AppCompatActivity {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        Toast.makeText(MainActivity.this, "" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toasty.error(MainActivity.this, "" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -382,9 +399,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     int statBefore;
+    String field;
 
     public void downloadImageFromUrl(View view) throws IOException {
-            String field = tv.getText().toString();
+        field = tv.getText().toString();
         if(!isNetworkConnected()){statBefore=3;}else{
             enableStrictMode();
             statBefore = checkURL(field);
@@ -394,7 +412,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "No Permission", Toast.LENGTH_SHORT).show();
+            Toasty.error(this, "No Permission", Toast.LENGTH_SHORT).show();
         } else {
 
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -416,12 +434,12 @@ public class MainActivity extends AppCompatActivity {
                     .subscribe(new Consumer<Object>() {
                         @Override
                         public void accept(Object o) throws Exception {
-                            Toast.makeText(MainActivity.this, "Link added!", Toast.LENGTH_SHORT).show();
+                            Toasty.success(MainActivity.this, "Link added!", Toast.LENGTH_SHORT).show();
                         }
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
-                            Toast.makeText(MainActivity.this, "" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toasty.error(MainActivity.this, "" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -434,7 +452,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             } else {
-                Toast.makeText(MainActivity.this, "" + "Fields must be filled", Toast.LENGTH_SHORT).show();
+                Toasty.error(MainActivity.this,  " Fields must be filled", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -450,16 +468,16 @@ public class MainActivity extends AppCompatActivity {
         }
         catch (UnknownHostException e)
         {
-            Toast.makeText(this,"Host not found",Toast.LENGTH_SHORT).show();
+            Toasty.error(this, " Host not found", Toast.LENGTH_SHORT).show();
             return 2;
         }
 
 
         if(statusCode == 404){
-            Toast.makeText(this,"404",Toast.LENGTH_SHORT).show();
+            Toasty.error(this," 404",Toast.LENGTH_SHORT).show();
             return 2;
         }else{
-            Toast.makeText(this,"Fine "+Integer.toString(statusCode),Toast.LENGTH_SHORT).show();
+            Toasty.success(this," Fine "+Integer.toString(statusCode),Toast.LENGTH_SHORT).show();
             return 1;
         }
     }

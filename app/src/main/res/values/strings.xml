@@ -11,5 +11,6 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="ok_btn_text">OK</string>
     <string name="enter_your_link">Enter your link</string>
+    <string name="app_intro_skip">Skip</string>
 
 </resources>

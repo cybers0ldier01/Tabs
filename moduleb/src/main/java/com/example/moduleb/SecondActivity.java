@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.support.v4.app.ActivityCompat;
@@ -19,13 +21,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.taishi.flipprogressdialog.FlipProgressDialog;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
+
+import es.dmoral.toasty.Toasty;
 
 
 public class SecondActivity extends Activity {
@@ -34,18 +43,29 @@ public class SecondActivity extends Activity {
     String url;
     ImageView image;
     Bundle extras;
-    ProgressDialog mProgressDialog;
-    TextView tv;
     AlertDialog alertD;
     CountDownTimer localTimer;
     private static final int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 100;
+
+    RelativeLayout Alayout;
+    AnimationDrawable animationDrawable;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get the layout from image.xml
         setContentView(R.layout.activity_second);
-        tv=findViewById(R.id.textView2);
+
+        //=========GRADIENT_DESIGN=================
+
+        Alayout = (RelativeLayout) findViewById(R.id.ViewImageActivity);
+        animationDrawable = (AnimationDrawable) Alayout.getBackground();
+        animationDrawable.setEnterFadeDuration(4500);
+        animationDrawable.setExitFadeDuration(4500);
+        animationDrawable.start();
+
+        //=========================================
+
         if (ActivityCompat.checkSelfPermission(SecondActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(SecondActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CONSTANT);
         }
@@ -135,18 +155,23 @@ public class SecondActivity extends Activity {
     // DownloadImage AsyncTask
     private class UploadImage extends AsyncTask<String, Void, Bitmap> {
         InputStream input = null;
+        //Process dialog load
+        List<Integer> imageList = new ArrayList<>();
+        FlipProgressDialog flip = new FlipProgressDialog();
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            // Create a progressdialog
-            mProgressDialog = new ProgressDialog(SecondActivity.this);
-            // Set progressdialog title
-            mProgressDialog.setTitle("Upload Image");
-            // Set progressdialog message
-            mProgressDialog.setMessage("Loading...");
-            mProgressDialog.setIndeterminate(false);
-            // Show progressdialog
-            mProgressDialog.show();
+            //Process dialog parameters
+            imageList.add(R.drawable.download);
+            imageList.add(R.drawable.gal);
+            flip.setImageList(imageList);
+            flip.setOrientation("rotationY");
+            flip.setBackgroundColor(Color.parseColor("#4a4a4a"));
+            flip.setBackgroundAlpha(0.2f);
+            flip.setCornerRadius(32);
+            flip.setDuration(800);
+            flip.show(getFragmentManager(), "");
         }
 
         @Override
@@ -170,14 +195,12 @@ public class SecondActivity extends Activity {
         protected void onPostExecute(Bitmap result) {
             try{input.close();}
             catch (IOException e){
-                Toast.makeText(getApplicationContext(),"Something went wrong",Toast.LENGTH_LONG).show();
+                Toasty.error(getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
             // Set the bitmap into ImageView
             image.setImageBitmap(result);
-            // Close progressdialog
-            mProgressDialog.dismiss();
-
-
+            // Close progress dialog
+            flip.dismiss();
         }
     }
     public void start_alarm() {
