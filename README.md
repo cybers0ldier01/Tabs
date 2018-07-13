@@ -25,20 +25,20 @@ Click [here](https://github.com) to download apk-files,
 <img src="скрін з репозиторієм де вони лежать" width="250" />
 
 
-and click [here] to download whole project.
+and click [here](https://github.com/TrueDevels/Tabs/tree/Ivan_Branch) to download whole project.
 
-<img src="скрін з репозиторієм 2" width="250" />
+<img src="https://i.imgur.com/7QWDUbW.png" width="250" />
 
 ### How to use it
 
 User should input URL and press OK:
 
-<img src="https://i.imgur.com/ABJrK5T.jpg" width="250" />
+<img src="https://i.imgur.com/nPvHyE9.png" width="250" />
 
 
 If everything is fine, user will see this:
 
-<img src="https://i.imgur.com/l3juwwC.jpg" height="250" />
+<img src="https://i.imgur.com/NaxyVqf.png" height="250" />
 
 Module A has also second tab - History. Here user can see all URLs that are in database. Every URL has his own status - downloaded, failed or unknown. If URL in History is red - this URL is not an image or this URL doesn't exist. And if it is green - it was downloaded fine. If URL is transparent, so checking of URL or downloading of image was failed. In this tab user may sort links by date or by status. User may go to ModuleB by clicking on the URL in History. Module B will recheck status of this link, and if it is green, URL would be deleted from the database in 15 seconds, but image would be saved in /sdcard/BIGDIG/test/B. User will get message about this action.
 
