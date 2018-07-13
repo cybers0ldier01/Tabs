@@ -6,7 +6,7 @@ This project can help user with viewing a picture if user has link for image. Ap
 
 At first, user should install both modules.
 
-<img src="https://i.imgur.com/pvckcj4.jpg" width="250" />
+<img src="https://i.imgur.com/GnGa3Aq.png" width="250" />
 
 
 [First module] is created to input URLs and to work with SQLite database.
@@ -53,5 +53,3 @@ Module A has also second tab - History. Here user can see all URLs that are in d
 * *Andrii Serbenyuk* - andriy.serb1@gmail.com
 * *Danil Miniailo* - daniel_changer@yahoo.com
 * *Mihail Samsonenko* - michaeldark49a@gmail.com
-
-*this page not done...yet*
