@@ -15,8 +15,8 @@
         android:layout_centerVertical="true"
         android:id="@+id/glideImageView"
 
-        app:error_res="@drawable/ic_launcher_background"
-        app:placeholder_res="@drawable/ic_launcher_background"
+        app:error_res="@drawable/error"
+        app:placeholder_res="@drawable/loading"
         app:show_progress="true"
         />
 
