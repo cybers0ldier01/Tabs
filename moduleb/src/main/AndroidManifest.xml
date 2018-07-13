@@ -11,9 +11,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/app_b_icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/app_b_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".SecondActivity">
@@ -22,6 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <receiver android:name=".Alarm" />
     </application>
 

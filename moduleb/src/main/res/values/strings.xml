@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ModuleB</string>
+    <string name="app_name">Image Viewer (B)</string>
     <string name="message">You needed to start this app from module A. </string>
     <string name="seconds_left">seconds.</string>
 </resources>

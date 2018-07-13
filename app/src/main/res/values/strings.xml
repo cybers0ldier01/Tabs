@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Image Viewer</string>
-    <string name="app_name2">Image viewer</string>
+    <string name="app_name">Image Manager (A)</string>
+    <string name="app_name2">Image Manager (A)</string>
     <string name="title_test">Test</string>
     <string name="title_history">Story</string>
     <string name="button">OK</string>

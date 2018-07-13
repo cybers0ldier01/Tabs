@@ -402,7 +402,12 @@ public class MainActivity extends AppCompatActivity {
     String field;
 
     public void downloadImageFromUrl(View view) throws IOException {
+
         field = tv.getText().toString();
+
+            String field = tv.getText().toString();
+            if(isValid(field)){
+
         if(!isNetworkConnected()){statBefore=3;}else{
             enableStrictMode();
             statBefore = checkURL(field);
@@ -411,9 +416,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            Toasty.error(this, "No Permission", Toast.LENGTH_SHORT).show();
-        } else {
 
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             Date date = new Date();
@@ -443,7 +445,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
-            if (isValid(field)) {
+
                 Intent intent = getPackageManager().getLaunchIntentForPackage("com.example.moduleb");
                 intent.addCategory("com.example.moduleb");
                 intent.putExtra("url", tv.getText().toString());
@@ -452,10 +454,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             } else {
-                Toasty.error(MainActivity.this,  " Fields must be filled", Toast.LENGTH_SHORT).show();
+               Toast.makeText(MainActivity.this, "" + "Field must be filled with URL!", Toast.LENGTH_SHORT).show();
+
             }
         }
-    }
+
 
     public int checkUrlExist(String str) throws IOException{
         int statusCode=0;
