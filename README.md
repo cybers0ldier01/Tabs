@@ -27,7 +27,7 @@ Click [here](https://github.com) to download apk-files,
 
 and click [here](https://github.com/TrueDevels/Tabs/tree/Ivan_Branch) to download whole project.
 
-<img src="https://i.imgur.com/7QWDUbW.png" width="250" />
+<img src="https://i.imgur.com/7QWDUbW.png" width="600" />
 
 ### How to use it
 
