@@ -2,9 +2,6 @@ package com.example.moduleb;
 
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -12,24 +9,22 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class DownloadImage extends AsyncTask<Void, Void, Void> {
-    //DOWNLOAD CLASS
-        //url setter
+
         private String imageURL;
         public void setURL(String url){
             imageURL = url;
         }
 
-        //FEATURE
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
         }
 
-        //======================DOWNLOAD_IMAGE========================================
-        //==============TO_/storage/emulated/0/BIGDIG/B===============================
+
         @Override
         protected Void doInBackground(Void... voids) {
-            //set random name
+
             int r = (int) (Math.random() * 2147483647);
             String fileName = "image" + String.valueOf(r);
 
@@ -38,21 +33,20 @@ public class DownloadImage extends AsyncTask<Void, Void, Void> {
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
-                //path ot directory
+
                 File SDCardRoot = new File(Environment.getExternalStorageDirectory() + "/BIGDIG/test/B");
-                //exist check --> if dir not exist, it will create
                 if (!SDCardRoot.exists()) {
                     SDCardRoot.mkdirs();
                 }
-                //create image file
-                File file = new File(SDCardRoot, fileName);
-                //read format from url after '.'
+
+                File file;
+
                 String extension = "";
                 int i = imageURL.lastIndexOf('.');
                 if (i > 0) {
                     extension = imageURL.substring(i + 1);
                 }
-                //set format to FileName  --> name with correct format
+
                 switch (extension) {
                     case "gif":
                         fileName += ".gif";
@@ -82,7 +76,6 @@ public class DownloadImage extends AsyncTask<Void, Void, Void> {
                         fileName = null;
                 }
                 file = new File(SDCardRoot, fileName);
-                //start downloading image
                 FileOutputStream fileOutput = new FileOutputStream(file);
                 InputStream inputStream = urlConnection.getInputStream();
                 byte[] buffer = new byte[1];
@@ -98,12 +91,9 @@ public class DownloadImage extends AsyncTask<Void, Void, Void> {
             return null;
         }
 
-        //FEATURES
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
         }
-        //================================FILE_WAS_DOWNLOADED===========================
     }
 
-//git

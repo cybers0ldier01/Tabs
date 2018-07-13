@@ -3,19 +3,13 @@ package com.example.misha.modulea;
 import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.ConnectivityManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.StrictMode;
-import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,22 +18,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.misha.modulea.Database.LinkRepository;
 import com.example.misha.modulea.Link.MyLink;
 import com.example.misha.modulea.Local.LinkDataSourceClass;
 import com.example.misha.modulea.Local.LinkDatabase;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -70,12 +59,10 @@ public class MainActivity extends AppCompatActivity {
     ImageButton button;
     static LinkAdapter linkAd;
     TabHost tabHost;
-    public static final String EXTRA_MESSAGE = "com.example.misha.modulea.MESSAGE";
     Button btn;
     TextView tv;
     static Context context;
     static List<MyLink> links = new ArrayList<>();
-    // ArrayList<MyLink> local;
     Map<MyLink, Integer> status_sort = new HashMap<>();
     Map<MyLink, String> status_date = new HashMap<>();
     ListView lv;
@@ -84,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main2, menu);
         return true;
     }
@@ -119,14 +105,11 @@ public class MainActivity extends AppCompatActivity {
 
     private static HashMap sortByValues(HashMap map) {
         List list = new LinkedList(map.entrySet());
-        // Defined Custom Comparator here
         Collections.sort(list, new Comparator() {
             public int compare(Object o1, Object o2) {
                 return ((Comparable) ((Map.Entry) (o1)).getValue()).compareTo(((Map.Entry) (o2)).getValue());
             }
         });
-        // Here I am copying the sorted list in HashMap
-        // using LinkedHashMap to preserve the insertion order
         HashMap sortedHashMap = new LinkedHashMap();
         for (Iterator it = list.iterator(); it.hasNext(); ) {
             Map.Entry entry = (Map.Entry) it.next();
@@ -137,15 +120,13 @@ public class MainActivity extends AppCompatActivity {
 
     private static HashMap sortByValuesBackward(HashMap map) {
         List list = new LinkedList(map.entrySet());
-        // Defined Custom Comparator here
         Collections.sort(list, new Comparator() {
             public int compare(Object o1, Object o2) {
                 return ((Comparable) ((Map.Entry) (o2)).getValue()).compareTo(((Map.Entry) (o1)).getValue());
             }
         });
 
-        // Here I am copying the sorted list in HashMap
-        // using LinkedHashMap to preserve the insertion order
+
         HashMap sortedHashMap = new LinkedHashMap();
         for (Iterator it = list.iterator(); it.hasNext(); ) {
             Map.Entry entry = (Map.Entry) it.next();
@@ -157,21 +138,17 @@ public class MainActivity extends AppCompatActivity {
     private static final int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 100;
 
 
-    //========================URL_CHECK_METHODS============================
-    //Returns true if url is valid
+
     public static boolean isValid(String url) {
-        // Try creating a valid URL
         try {
             new URL(url).toURI();
             return true;
         }
-        // If there was an Exception while creating URL object
         catch (Exception e) {
             return false;
         }
     }
 
-    //if url is image, return stat 1, else if url web-site or video return 2
     public int checkURL(String u) throws IOException {
         int status;
         String format = "";
@@ -180,7 +157,6 @@ public class MainActivity extends AppCompatActivity {
         if (i > 0) {
             extension = u.substring(i + 1);
         }
-        //set format to FileName  --> name with correct format
         switch (extension) {
             case "gif":
                 format += "gif";
@@ -216,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return status;
     }
-//==============================================================================
 
     TabHost Alayout;
     AnimationDrawable animationDrawable;
@@ -231,43 +206,41 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CONSTANT);
         }
 
-        //=============GRADIENT_DESIGN================
 
-        Alayout = (TabHost) findViewById(R.id.tabHost);
+
+        Alayout =  findViewById(R.id.tabHost);
         animationDrawable = (AnimationDrawable) Alayout.getBackground();
         animationDrawable.setEnterFadeDuration(4500);
         animationDrawable.setExitFadeDuration(4500);
         animationDrawable.start();
 
-        //============================================
+
 
         enableStrictMode();
         context = getApplicationContext();
         compositeDisposable = new CompositeDisposable();
         LinkDatabase linkDatabase = LinkDatabase.getInstance(this);
         linkRepository = LinkRepository.getmInstance(LinkDataSourceClass.getInstance(linkDatabase.linkDAO()));
-        //Load all Data from Database
         loadData();
 
-        TabHost host = (TabHost) findViewById(R.id.tabHost);
+        TabHost host =  findViewById(R.id.tabHost);
         host.setup();
 
-        //Tab 1
         TabHost.TabSpec spec = host.newTabSpec("Test");
         spec.setContent(R.id.tab1);
         spec.setIndicator("Test");
         host.addTab(spec);
 
-        //Tab 2
+
         spec = host.newTabSpec("History");
         spec.setContent(R.id.tab2);
         spec.setIndicator("History");
         host.addTab(spec);
 
 
-        lv = (ListView) findViewById(R.id.listview); // находим список
+        lv =  findViewById(R.id.listview);
         linkAd = new LinkAdapter(this, android.R.layout.simple_list_item_1, links);
-        lv.setAdapter(linkAd);   // присваиваем адаптер списку
+        lv.setAdapter(linkAd);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
@@ -307,6 +280,7 @@ public class MainActivity extends AppCompatActivity {
 
                             }
                         });
+                compositeDisposable.add(disposablen);
                 if (links.get(id).getStatus() == 1) {
                     statAfter = 4;
                     Disposable disposablen2 = io.reactivex.Observable.create(new ObservableOnSubscribe<Object>() {
@@ -359,8 +333,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        btn = (Button) findViewById(R.id.button);
-        tv = (TextView) findViewById(R.id.editText);
+        btn =  findViewById(R.id.button);
+        tv =  findViewById(R.id.editText);
 
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar_test));
@@ -394,7 +368,6 @@ public class MainActivity extends AppCompatActivity {
         links.addAll(myLinks);
         linkAd.notifyDataSetChanged();
     }
-    //=================================DOWNLOAD=========================================
 
 
     int statBefore;
@@ -443,7 +416,7 @@ public class MainActivity extends AppCompatActivity {
                             Toasty.error(MainActivity.this, "" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
-
+                    compositeDisposable.add(disposable);
 
                 Intent intent = getPackageManager().getLaunchIntentForPackage("com.example.moduleb");
                 intent.addCategory("com.example.moduleb");
@@ -456,6 +429,7 @@ public class MainActivity extends AppCompatActivity {
                Toast.makeText(MainActivity.this, "" + "Field must be filled with URL!", Toast.LENGTH_SHORT).show();
 
             }
+
         }
 
 
@@ -466,7 +440,6 @@ public class MainActivity extends AppCompatActivity {
         try {
             connection.connect();
             statusCode = connection.getResponseCode();
-            //System.out.println(statusCode);
         }
         catch (UnknownHostException e)
         {
@@ -511,4 +484,3 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-//git

@@ -61,6 +61,7 @@ public class DB_Delete extends BroadcastReceiver {
 
                     }
                 });
+
         Toast.makeText(context, "IMAGE WAS DELETED", Toast.LENGTH_LONG).show();
     }
 }

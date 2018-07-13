@@ -2,9 +2,7 @@ package com.example.moduleb;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.app.ProgressDialog;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,26 +10,18 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
-import android.graphics.Movie;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import com.taishi.flipprogressdialog.FlipProgressDialog;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -55,18 +45,17 @@ public class SecondActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Get the layout from image.xml
         setContentView(R.layout.activity_second);
 
-        //=========GRADIENT_DESIGN=================
 
-        Alayout = (RelativeLayout) findViewById(R.id.ViewImageActivity);
+
+        Alayout =  findViewById(R.id.ViewImageActivity);
         animationDrawable = (AnimationDrawable) Alayout.getBackground();
         animationDrawable.setEnterFadeDuration(4500);
         animationDrawable.setExitFadeDuration(4500);
         animationDrawable.start();
 
-        //=========================================
+
 
         if (ActivityCompat.checkSelfPermission(SecondActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(SecondActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CONSTANT);
@@ -84,19 +73,16 @@ public class SecondActivity extends Activity {
             } else{
               url = intentFromAppA.getStringExtra(LINK_TAG);
 
-                    // Locate the ImageView in activity_main.xml
                     image =  findViewById(R.id.image);
                     if(image.getDrawable()==null) {
                     new UploadImage().execute(url);
                     }
-                //}
 
 
-                //image.getDrawable().toString();
+
 
                 if(extras.getString("from").equals("history")){
-                    //Toast.makeText(this,"URL will be deleted from DB in 15 seconds",Toast.LENGTH_LONG).show();
-                    //start_alarm();
+
                     DownloadImage asyncTask = new DownloadImage();
                     asyncTask.setURL(url);
                     asyncTask.execute();
@@ -113,7 +99,6 @@ public class SecondActivity extends Activity {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(SecondActivity.this);
         alertDialog.setCancelable(false);
         alertDialog.setTitle("Oops...");
-      //  alertDialog.setMessage("You need to start this app from module A! It will be closed automatically in 10 seconds.");
         alertDialog.setNegativeButton("Close", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -156,20 +141,18 @@ public class SecondActivity extends Activity {
         }
         return false;
     }
-    //=================================
 
-    // DownloadImage AsyncTask
 
     private class UploadImage extends AsyncTask<String, Void, Bitmap> {
         InputStream input = null;
-        //Process dialog load
+
         List<Integer> imageList = new ArrayList<>();
         FlipProgressDialog flip = new FlipProgressDialog();
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //Process dialog parameters
+
             imageList.add(R.drawable.download);
             imageList.add(R.drawable.gal);
             flip.setImageList(imageList);
@@ -189,9 +172,9 @@ public class SecondActivity extends Activity {
 
             Bitmap bitmap = null;
             try {
-                // Download Image from URL
+
                 input = new java.net.URL(imageURL).openStream();
-                // Decode Bitmap
+
 
 
                 bitmap = BitmapFactory.decodeStream(input);
@@ -210,9 +193,9 @@ public class SecondActivity extends Activity {
             }
 
 
-            // Set the bitmap into ImageView
+
             image.setImageBitmap(result);
-            // Close progress dialog
+
             flip.dismiss();
         }
     }
@@ -239,6 +222,6 @@ public class SecondActivity extends Activity {
 
 }
 
-//git
+
 
 
